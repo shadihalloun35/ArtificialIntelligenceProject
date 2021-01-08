@@ -18,7 +18,7 @@ start = timeit.default_timer()
 #Your statements here
 
 
-f = open("secondInput.txt", "r")
+f = open("firstInput.txt", "r")
 savedInput  = f.read().splitlines()
 algorithm = savedInput[0]
 dim = int(savedInput[1])
@@ -39,7 +39,6 @@ print(path,expandedNodes)
 
 print('Time: ', stop - start)  
 
-print('Time: ', stop - start)  
 
 
 #path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
