@@ -38,6 +38,8 @@ print(path,expandedNodes)
 
 print('Time: ', stop - start)  
 
+print('Time: ', stop - start)  
+
 
 #path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
 
