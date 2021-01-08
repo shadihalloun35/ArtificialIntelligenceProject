@@ -6,6 +6,7 @@ Created on Wed Jan  6 13:24:36 2021
 """
 
 import ASTAR
+
 #import UCS
 
 from HeuristicFunctions import calcEuclideanHeuristic
