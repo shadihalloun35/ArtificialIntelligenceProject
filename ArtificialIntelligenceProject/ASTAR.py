@@ -10,7 +10,7 @@ from Node import Node
 
 # A* algorithm
 def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
-    
+   
     # Counter for the expanded nodes
     expandedNodes = 0
     
@@ -45,6 +45,7 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
         
         # Check if we have reached the goal, return the path
         if current_node == goal_node:
+        
             path = []
             while current_node != start_node:
                 path.append(str(current_node.point) + ': ' + str(current_node.g))
