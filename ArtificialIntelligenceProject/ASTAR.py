@@ -23,7 +23,7 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
     goal_node = Node(goalPoint, None)
     
     # Calculate start_node cost
-    start_node.g = start_node.g + matrix[startPoint[0]][startPoint[1]]
+    start_node.g = 0
     start_node.h = heuristicMatrix[startPoint[0]][startPoint[1]]
     start_node.f = start_node.g + start_node.h
      
