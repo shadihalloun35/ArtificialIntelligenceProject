@@ -6,6 +6,8 @@ Created on Wed Jan  6 13:24:36 2021
 """
 
 import ASTAR
+import IDS
+import math
 
 #import UCS
 
@@ -26,10 +28,9 @@ startPoint_list = savedInput[2].split(',')
 startPoint = (int(startPoint_list[0]),int(startPoint_list[0]))
 goalPoint_list = savedInput[3].split(',')
 goalPoint = (int(goalPoint_list[0]),int(goalPoint_list[1]))
-#goalPoint = startPoint
 matrix = [[int(num) for num in line.split(',')] for line in savedInput[4:]]
 
-
+'''
 euclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
 
 path,expandedNodes = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix)
@@ -39,12 +40,23 @@ stop = timeit.default_timer()
 print(path,expandedNodes)
 
 print('Time: ', stop - start)  
-
-
+'''
 
 #path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
 
 #print(path,expandedNodes)
+
+
+
+path = IDS.ids_search(111111 , dim , startPoint , goalPoint , matrix)
+
+print(path)
+
+
+
+
+
+
 
 
 
