@@ -29,6 +29,7 @@ startPoint = (int(startPoint_list[0]),int(startPoint_list[0]))
 goalPoint_list = savedInput[3].split(',')
 goalPoint = (int(goalPoint_list[0]),int(goalPoint_list[1]))
 matrix = [[int(num) for num in line.split(',')] for line in savedInput[4:]]
+goalPoint = (2,2)
 
 '''
 euclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
@@ -48,7 +49,7 @@ print('Time: ', stop - start)
 
 
 
-path = IDS.ids_search(111111 , dim , startPoint , goalPoint , matrix)
+path = IDS.ids_search(100 , dim , startPoint , goalPoint , matrix)
 
 print(path)
 

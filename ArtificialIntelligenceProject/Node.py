@@ -15,7 +15,7 @@ class Node:
         self.g = 0 # g cost
         self.h = 0 # h cost
         self.f = 0 # f cost
-        
+        self.d = 0
 
     # Compare nodes
     def __eq__(self, other):
