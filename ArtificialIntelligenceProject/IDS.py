@@ -17,14 +17,13 @@ def ids_search(maximum_depth , dim , startPoint , goalPoint , matrix):
     global start_node
 
     # Create a start node and an goal node
-   # start_node = Node(startPoint, (None))
-   # goal_node = Node(goalPoint, None)
+    start_node = Node(startPoint, (None))
+    goal_node = Node(goalPoint, None)
     
     #Loop for d from 1 to infinity
     for d in range(maximum_depth): 
         visited = initDict(dim)
-        #print(d)
-        if dls_search(visited,dim,startPoint, goalPoint, matrix,d): 
+        if dls_search(visited,dim,start_node, goal_node, matrix,d): 
             return True
     return False
 
@@ -35,41 +34,48 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
      global start_node
      
      opened = []
-   #  closed = []
-     depth = 0
+     
 
      opened.append(currentNode)
-     visited[currentNode] = True
+     visited[currentNode.point] = True
       
-    # print(currentPoint)
-    # print(goalPoint)
+   
   
      # If reached the maximum depth, stop recursing. 
   
-     while len(opened) > 0: 
-         #print(depth)
-         if depth <= limit:
-            current = opened.pop(0) 
-            
-            # visited[current] = False
+     while len(opened) > 0:      
+         current = opened.pop(0) 
+         if current.d <= limit:
             if current == goalNode:
+                pathlen = 0
+                path = []
+                while current != start_node:
+                    pathlen-=1
+                    x=-pathlen
+                    path.append(str(current.point) + ': ' + str(x))
+                    current = current.parent
+                x+=1    
+                path.append(str(start_node.point) + ': ' + str(x))
+                    
+                    # Return reversed path
+                print( path[::-1])
+                
                 print("Goal Node Found")
-                return True
-            else: 
+                return True      
+            else:             
                 # Get neighbours
-                neighbourPoints = getNeighbours(dim,current,matrix)
-                for  neighbour in neighbourPoints:
+                neighbourPoints = getNeighbours(dim,current.point,matrix)
+                for  neighbour in neighbourPoints: 
+                    neighborNode = Node(neighbour, current)                   
                     # try to visit a node in future, if not already been to it
                     if(not(visited[neighbour])):
-                        
-                        opened.append(neighbour)
+                        neighborNode.d = current.d + 1 
+                        opened.append(neighborNode)
                         visited[neighbour] = True
-                depth += 1            
+                           
          else:
-            print("Not found within depth limit",depth)
+            print("Not found within depth limit",current.d)
             return False
-
-
      return False
     
     

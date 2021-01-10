@@ -29,7 +29,7 @@ startPoint = (int(startPoint_list[0]),int(startPoint_list[0]))
 goalPoint_list = savedInput[3].split(',')
 goalPoint = (int(goalPoint_list[0]),int(goalPoint_list[1]))
 matrix = [[int(num) for num in line.split(',')] for line in savedInput[4:]]
-goalPoint = (2,2)
+#goalPoint = (3,6)
 
 '''
 euclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
