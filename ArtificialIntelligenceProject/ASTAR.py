@@ -2,7 +2,7 @@
 """
 Created on Thu Jan  7 00:07:56 2021
 
-@author: shadi
+@author: Shadi and Noor
 """
 
 
