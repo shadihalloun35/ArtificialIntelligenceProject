@@ -2,7 +2,7 @@
 """
 Created on Sat Jan  9 00:01:02 2021
 
-@author: shadi
+@author: Shadi and Noor
 """
 
 import ASTAR

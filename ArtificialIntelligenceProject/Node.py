@@ -2,7 +2,7 @@
 """
 Created on Wed Jan  6 17:16:52 2021
 
-@author: shadi
+@author: Shadi and Noor
 """
 
 class Node:
