@@ -2,7 +2,7 @@
 """
 Created on Fri Jan  8 15:52:16 2021
 
-@author: shadi
+@author: Shadi and Noor
 """
 
 import math
