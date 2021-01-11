@@ -6,12 +6,14 @@ Created on Wed Jan  6 13:24:36 2021
 """
 
 import ASTAR
+import BIASTAR
 import IDS
 import math
-
+import sys
 #import UCS
 
 from HeuristicFunctions import calcEuclideanHeuristic
+from HeuristicFunctions import calcBackwardEuclideanHeuristic
 
 import timeit
 
@@ -30,7 +32,7 @@ goalPoint_list = savedInput[3].split(',')
 goalPoint = (int(goalPoint_list[0]),int(goalPoint_list[1]))
 matrix = [[int(num) for num in line.split(',')] for line in savedInput[4:]]
 
-'''
+
 euclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
 
 path,expandedNodes = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix)
@@ -40,19 +42,26 @@ stop = timeit.default_timer()
 print(path,expandedNodes)
 
 print('Time: ', stop - start)  
-'''
+
 
 #path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
 
 #print(path,expandedNodes)
 
+#path = IDS.ids_search(sys.maxsize , dim , startPoint , goalPoint , matrix)
 
+#print(path)
 
-path = IDS.ids_search(111111 , dim , startPoint , goalPoint , matrix)
+ForwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
+BackwardEuclideanHeuristicMatrix = calcBackwardEuclideanHeuristic(dim,matrix)
+#print(ForwardEuclideanHeuristicMatrix)
+#print("-----------------------------")
+#print(BackwardEuclideanHeuristicMatrix)
 
+#BackwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
+
+path = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
 print(path)
-
-
 
 
 
