@@ -39,9 +39,9 @@ path,expandedNodes = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, e
 
 stop = timeit.default_timer()
 
-print(path,expandedNodes)
+print(path)
 
-print('Time: ', stop - start)  
+#print('Time: ', stop - start)  
 
 
 #path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
@@ -54,11 +54,12 @@ print('Time: ', stop - start)
 
 ForwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
 BackwardEuclideanHeuristicMatrix = calcBackwardEuclideanHeuristic(dim,matrix)
-#print(ForwardEuclideanHeuristicMatrix)
-#print("-----------------------------")
-#print(BackwardEuclideanHeuristicMatrix)
+# =============================================================================
+# print(ForwardEuclideanHeuristicMatrix)
+# print("-----------------------------")
+# print(BackwardEuclideanHeuristicMatrix)
+# =============================================================================
 
-#BackwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
 
 path = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
 print(path)
