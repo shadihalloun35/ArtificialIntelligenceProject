@@ -43,11 +43,6 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
     # Loop until the open list is empty
     while len(forwardOpened) > 0 and len(backwardOpened) > 0:  ###### or not and
         
-        #print(len(forwardOpened))
-        #print(len(backwardOpened))
-        #print("--------------------------------")
-        pathForward = []
-        pathBackward = []
         # Sort the open list to get the node with the lowest cost first
         forwardOpened.sort()
         backwardOpened.sort()
@@ -61,43 +56,7 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
         backwardClosed.append(current_node_backward)
 
         expandedNodes += 2
-        
-        # After Node was found in both closed lists
-        '''
-
-        if current_node_forward in backwardClosed or current_node_backward in forwardClosed :
-            
-# =============================================================================
-#             print(current_node_forward)
-#             print(current_node_backward)
-# 
-#             print("parents:")
-#             print(current_node_forward.parent)
-#             print(current_node_backward.parent)
-# =============================================================================
-
-            print("we are here")
-            path = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed)
-            return path
-        
-        
-            #stop after W
-            while current_node_forward != start_node:
-                pathForward.append(str(current_node_forward.point) + ': ' + str(current_node_forward.g))
-                current_node_forward = current_node_forward.parent        
-    
-            pathForward.append(str(start_node.point) + ': ' + str(start_node.g))
-       
-            while current_node_backward != goal_node:
-                pathBackward.append(str(current_node_backward.point) + ': ' + str(current_node_backward.g))
-                current_node_backward = current_node_backward.parent
-        
-            pathBackward.append(str(goal_node.point) + ': ' + str(goal_node.g))
-                
-            # Return reversed path
-            return  pathForward[::-1] + pathBackward
-          '''      
-        
+         
         # Get neighbours
         neighborPointsForward = getNeighbours(dim,current_node_forward.point,matrix)
         neighborPointsBackward = getNeighbours(dim,current_node_backward.point,matrix)
@@ -154,12 +113,18 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
                     
                 # Add neighbor to open list
                 backwardOpened.append(neighborNodeBackward)
-        if current_node_forward in backwardClosed or current_node_backward in forwardClosed :
-            
-            print("we are here")
-            path = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed)
+                
+                
+        # After Node was found in both closed lists
+        if current_node_backward in forwardClosed:
+            path = findpath(goal_node,start_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint)
+            return path 
+        
+        if current_node_forward in backwardClosed :            
+            path = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint)
             return path   
-            
+        
+        
     # Return None, no path is found
     return None
 
@@ -187,28 +152,11 @@ def getNeighbours(dim,currentNodePoint,matrix):
 
     return myList     
 
-def findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed):
+def findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint):
     pathForward = []
     pathBackward = []
-    
-    
-# =============================================================================
-#     print(start_node)
-#     print(goal_node)
-#    
-# # =============================================================================
-#     print("\nbackwardOpend:")
-#     print(backwardOpened)
-#     print("\nbackwardClosed:")
-#     print(backwardClosed)
-#     print("\nforwardOpened:")
-#     print(forwardOpened)
-#     print("\nforwardClosed:")
-#     print(forwardClosed)
-# =============================================================================
-# =============================================================================
-    
-    
+    totalSumG = 0
+        
     minValue = sys.maxsize
     minNodeOpen = Node(None,None)
     minNodeClosed = Node(None,None)
@@ -229,21 +177,38 @@ def findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,bac
                     minValue = nodeOpen.f + nodeClosed.f
                     minNodeOpen = nodeOpen
                     minNodeClosed = nodeClosed
-    
-              
-    
-    while minNodeOpen != goal_node:
+
+    i = 0    
+    while minNodeOpen != start_node:
+        if i == 0:
+            savedForwardNode = minNodeOpen
+            #pathForward.append('=================')
+            i = 1
+            
         pathForward.append(str(minNodeOpen.point) + ': ' + str(minNodeOpen.g))
         minNodeOpen = minNodeOpen.parent        
+        
+    pathForward.append(str(start_node.point) + ': ' + str(start_node.g))
 
-    pathForward.append(str(goal_node.point) + ': ' + str(goal_node.g))
-   
-    while minNodeClosed != start_node:
+    i = 0
+    while minNodeClosed != goal_node:
+        if i == 0:
+            savedBackwardNode = minNodeClosed
+            i = 1
         pathBackward.append(str(minNodeClosed.point) + ': ' + str(minNodeClosed.g))
         minNodeClosed = minNodeClosed.parent
+
+    pathBackward.append(str(goal_node.point) + ': ' + str(goal_node.g))
+ 
     
-    pathBackward.append(str(start_node.point) + ': ' + str(start_node.g))
-            
+    if savedForwardNode.g > savedBackwardNode.g:
+        pathForward.pop(0)
+    else:
+        pathBackward.pop(0)
+        
+    # Total cost of the path
+    totalSumG = int(pathBackward[0].split(':')[1]) + int(pathForward[0].split(':')[1]) + matrix[goalPoint[0]][goalPoint[1]]
+   
     # Return reversed path
-    return  pathBackward[::-1] + pathForward
+    return  pathBackward[::-1] + pathForward,totalSumG
     
