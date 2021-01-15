@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Jan  8 15:52:16 2021
-
 @author: Shadi and Noor
 """
 
@@ -24,4 +23,21 @@ def calcEuclideanHeuristic(dim , matrix):
        euclideanHeuristicMatrix.append(euclideanRow)
 
    return euclideanHeuristicMatrix
-    
+   
+
+def calcBackwardEuclideanHeuristic(dim , matrix):
+   euclideanHeuristicMatrix = []
+
+   for i in range(dim,0,-1):
+       euclideanRow = []
+       for j in range (dim,0,-1):
+           x = dim - i
+           y = dim - j
+           
+           #Pythagoras Formula
+           euclideanDistance = math.sqrt(x**2 + y**2)
+           euclideanRow.append(euclideanDistance)
+           
+       euclideanHeuristicMatrix.append(euclideanRow)
+
+   return euclideanHeuristicMatrix
