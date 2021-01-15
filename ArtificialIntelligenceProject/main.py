@@ -7,6 +7,7 @@ Created on Wed Jan  6 13:24:36 2021
 import ASTAR
 import BIASTAR
 import IDS
+import IDASTAR
 import math
 import sys
 #import UCS
@@ -61,8 +62,19 @@ BackwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(startPoint,dim,matrix)
 
 
 path,totalSumG = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
+#print(path)
+#print(totalSumG)
+
+#path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
+
+
+
+path = IDASTAR.idastar_search(sys.maxsize, dim, startPoint, goalPoint, matrix, euclideanHeuristicMatrix)
+
 print(path)
-print(totalSumG)
+
+
+
 
 
 '''

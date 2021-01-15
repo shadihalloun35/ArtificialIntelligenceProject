@@ -25,9 +25,8 @@ def ids_search(maximum_depth , dim , startPoint , goalPoint , matrix):
         visited = initDict(dim)
         if dls_search(visited,dim,start_node, goal_node, matrix,d): 
             return True
+    
     return False
-
-
 
 
 def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
@@ -76,6 +75,7 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
          else:
             print("Not found within depth limit",current.d)
             return False
+        
      return False
     
     
