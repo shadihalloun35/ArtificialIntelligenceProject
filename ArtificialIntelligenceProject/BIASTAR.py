@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Jan 11 19:02:24 2021
-
 @author: Shadi and Noor
 """
 
 
 from Node import Node
+import sys
 
 # Bidirectional A* algorithm
-def biastar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
+def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix,backwardHeuristicMatrix):
    
     # Counter for the expanded nodes
     expandedNodes = 0
@@ -23,25 +23,28 @@ def biastar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
     backwardClosed = []
     
     
-    start_node = Node(startPoint, (None))
+    start_node = Node(startPoint, None)
     goal_node = Node(goalPoint, None)
     
-    # Calculate start_node cost
+    # Calculate start_node cost foward way
     start_node.g = 0
-    start_node.h = heuristicMatrix[startPoint[0]][startPoint[1]]
+    start_node.h = forwardHeuristicMatrix[startPoint[0]][startPoint[1]]
     start_node.f = start_node.g + start_node.h
     
+    # Calculate start_node cost backward way
     goal_node.g = 0
-    goal_node.h = heuristicMatrix[goalPoint[0]][goalPoint[1]]
+    goal_node.h = backwardHeuristicMatrix[goalPoint[0]][goalPoint[1]]
     goal_node.f = goal_node.g + goal_node.h
-     
+
     # Add the start node
     forwardOpened.append(start_node) 
     backwardOpened.append(goal_node)
     
     # Loop until the open list is empty
-    while len(forwardOpened) > 0 and len(backwardOpened) > 0:
+    while len(forwardOpened) > 0 and len(backwardOpened) > 0:  ###### or not and
         
+        pathForward = []
+        pathBackward = []
         # Sort the open list to get the node with the lowest cost first
         forwardOpened.sort()
         backwardOpened.sort()
@@ -56,17 +59,40 @@ def biastar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
 
         expandedNodes += 2
         
-        # Check if we have reached the goal, return the path
+        # After Node was found in both closed lists
         if current_node_forward in backwardClosed or current_node_backward in forwardClosed :
-            path = []
-            while current_node != start_node:
-                path.append(str(current_node.point) + ': ' + str(current_node.g))
-                current_node = current_node.parent
-            path.append(str(start_node.point) + ': ' + str(start_node.g))
             
-            # Return reversed path
-            return path[::-1],expandedNodes
+# =============================================================================
+#             print(current_node_forward)
+#             print(current_node_backward)
+# 
+#             print("parents:")
+#             print(current_node_forward.parent)
+#             print(current_node_backward.parent)
+# =============================================================================
+
+            
+            path = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed)
+            return path
         
+        
+            #stop after W
+            '''
+            while current_node_forward != start_node:
+                pathForward.append(str(current_node_forward.point) + ': ' + str(current_node_forward.g))
+                current_node_forward = current_node_forward.parent        
+    
+            pathForward.append(str(start_node.point) + ': ' + str(start_node.g))
+       
+            while current_node_backward != goal_node:
+                pathBackward.append(str(current_node_backward.point) + ': ' + str(current_node_backward.g))
+                current_node_backward = current_node_backward.parent
+        
+            pathBackward.append(str(goal_node.point) + ': ' + str(goal_node.g))
+                
+            # Return reversed path
+            return  pathForward[::-1] + pathBackward
+          '''      
         
         # Get neighbours
         neighborPointsForward = getNeighbours(dim,current_node_forward.point,matrix)
@@ -79,7 +105,7 @@ def biastar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
             
             # Calculate full path cost
             neighborNodeForward.g = current_node_forward.g + matrix[myPointForward[0]][myPointForward[1]]
-            neighborNodeForward.h = heuristicMatrix[myPointForward[0]][myPointForward[1]]
+            neighborNodeForward.h = forwardHeuristicMatrix[myPointForward[0]][myPointForward[1]]
             neighborNodeForward.f = neighborNodeForward.g + neighborNodeForward.h
             
             # Check if the neighbor is in the closed list
@@ -104,9 +130,9 @@ def biastar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
             neighborNodeBackward = Node(myPointBackward, current_node_backward)
             
             # Calculate full path cost
-            neighborNodeForward.g = current_node_forward.g + matrix[myPointForward[0]][myPointForward[1]]
-            neighborNodeForward.h = heuristicMatrix[myPointForward[0]][myPointForward[1]]
-            neighborNodeForward.f = neighborNodeForward.g + neighborNodeForward.h
+            neighborNodeBackward.g = current_node_backward.g + matrix[myPointBackward[0]][myPointBackward[1]]
+            neighborNodeBackward.h = backwardHeuristicMatrix[myPointBackward[0]][myPointBackward[1]]
+            neighborNodeBackward.f = neighborNodeBackward.g + neighborNodeBackward.h
             
             # Check if the neighbor is in the closed list
             if(neighborNodeBackward in backwardClosed):
@@ -152,26 +178,53 @@ def getNeighbours(dim,currentNodePoint,matrix):
 
     return myList     
 
+def findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed):
+    pathForward = []
+    pathBackward = []
     
+# =============================================================================
+#     print(backwardOpened)
+#     print(backwardClosed)
+#     print(forwardOpened)
+#     print(forwardClosed)
+# =============================================================================
+    
+    
+    minValue = sys.maxsize
+    minNodeOpen = Node(None,None)
+    minNodeClosed = Node(None,None)
+        
+      
+    for nodeOpen in forwardOpened:
+        for nodeClosed in backwardClosed:
+            if nodeOpen == nodeClosed:
+                if (nodeOpen.f + nodeClosed.f) < minValue:
+                    minValue = nodeOpen.f + nodeClosed.f
+                    minNodeOpen = nodeOpen
+                    minNodeClosed = nodeClosed
+    
+    for nodeOpen in backwardOpened:
+        for nodeClosed in forwardClosed:
+            if nodeOpen == nodeClosed:
+                if (nodeOpen.f + nodeClosed.f) < minValue:
+                    minValue = nodeOpen.f + nodeClosed.f
+                    minNodeOpen = nodeOpen
+                    minNodeClosed = nodeClosed
+    
+              
+    
+    while minNodeOpen != goal_node:
+        pathForward.append(str(minNodeOpen.point) + ': ' + str(minNodeOpen.g))
+        minNodeOpen = minNodeOpen.parent        
 
+    pathForward.append(str(goal_node.point) + ': ' + str(goal_node.g))
+   
+    while minNodeClosed != start_node:
+        pathBackward.append(str(minNodeClosed.point) + ': ' + str(minNodeClosed.g))
+        minNodeClosed = minNodeClosed.parent
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    pathBackward.append(str(start_node.point) + ': ' + str(start_node.g))
+            
+    # Return reversed path
+    return  pathBackward[::-1] + pathForward
     
