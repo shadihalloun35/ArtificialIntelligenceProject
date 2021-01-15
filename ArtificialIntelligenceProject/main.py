@@ -12,7 +12,7 @@ import sys
 #import UCS
 
 from HeuristicFunctions import calcEuclideanHeuristic
-from HeuristicFunctions import calcBackwardEuclideanHeuristic
+#from HeuristicFunctions import calcBackwardEuclideanHeuristic
 
 import timeit
 
@@ -30,15 +30,16 @@ startPoint = (int(startPoint_list[0]),int(startPoint_list[0]))
 goalPoint_list = savedInput[3].split(',')
 goalPoint = (int(goalPoint_list[0]),int(goalPoint_list[1]))
 matrix = [[int(num) for num in line.split(',')] for line in savedInput[4:]]
+goalPoint = (4,4)
+#startPoint = (1,1)
 
-
-euclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
-
+euclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
+#print(euclideanHeuristicMatrix)
 path,expandedNodes = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix)
 
-stop = timeit.default_timer()
+#stop = timeit.default_timer()
 
-#print(path)
+print(path)
 
 #print('Time: ', stop - start)  
 
@@ -47,21 +48,21 @@ stop = timeit.default_timer()
 
 #print(path,expandedNodes)
 
-path = IDS.ids_search(sys.maxsize , dim , startPoint , goalPoint , matrix)
+#path = IDS.ids_search(sys.maxsize , dim , startPoint , goalPoint , matrix)
 
-print(path)
+#print(path)
 
-ForwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(dim,matrix)
-BackwardEuclideanHeuristicMatrix = calcBackwardEuclideanHeuristic(dim,matrix)
+ForwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
+BackwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(startPoint,dim,matrix)
 # =============================================================================
-# print(ForwardEuclideanHeuristicMatrix)
-# print("-----------------------------")
-# print(BackwardEuclideanHeuristicMatrix)
+#print(ForwardEuclideanHeuristicMatrix)
+#print("-----------------------------")
+#print(BackwardEuclideanHeuristicMatrix)
 # =============================================================================
 
 
 path = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
-#print(path)
+print(path)
 
 
 

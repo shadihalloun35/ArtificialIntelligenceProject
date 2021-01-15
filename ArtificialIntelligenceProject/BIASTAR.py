@@ -43,6 +43,9 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
     # Loop until the open list is empty
     while len(forwardOpened) > 0 and len(backwardOpened) > 0:  ###### or not and
         
+        #print(len(forwardOpened))
+        #print(len(backwardOpened))
+        #print("--------------------------------")
         pathForward = []
         pathBackward = []
         # Sort the open list to get the node with the lowest cost first
@@ -60,6 +63,8 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
         expandedNodes += 2
         
         # After Node was found in both closed lists
+        '''
+
         if current_node_forward in backwardClosed or current_node_backward in forwardClosed :
             
 # =============================================================================
@@ -71,13 +76,12 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
 #             print(current_node_backward.parent)
 # =============================================================================
 
-            
+            print("we are here")
             path = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed)
             return path
         
         
             #stop after W
-            '''
             while current_node_forward != start_node:
                 pathForward.append(str(current_node_forward.point) + ': ' + str(current_node_forward.g))
                 current_node_forward = current_node_forward.parent        
@@ -150,7 +154,12 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
                     
                 # Add neighbor to open list
                 backwardOpened.append(neighborNodeBackward)
-                
+        if current_node_forward in backwardClosed or current_node_backward in forwardClosed :
+            
+            print("we are here")
+            path = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed)
+            return path   
+            
     # Return None, no path is found
     return None
 
@@ -182,11 +191,21 @@ def findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,bac
     pathForward = []
     pathBackward = []
     
+    
 # =============================================================================
+#     print(start_node)
+#     print(goal_node)
+#    
+# # =============================================================================
+#     print("\nbackwardOpend:")
 #     print(backwardOpened)
+#     print("\nbackwardClosed:")
 #     print(backwardClosed)
+#     print("\nforwardOpened:")
 #     print(forwardOpened)
+#     print("\nforwardClosed:")
 #     print(forwardClosed)
+# =============================================================================
 # =============================================================================
     
     

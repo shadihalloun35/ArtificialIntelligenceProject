@@ -17,16 +17,15 @@ class Node:
         self.f = 0 # f cost
         self.d = 0
 
+
     # Compare nodes
     def __eq__(self, other):
         return self.point == other.point
         
     # Sort nodes
-    def __lt__(self, other):
-        
+    def __lt__(self, other):        
         if self.f != other.f:
             return self.f < other.f
-        
         elif self.h != other.h:    
             return self.h < other.h
      
