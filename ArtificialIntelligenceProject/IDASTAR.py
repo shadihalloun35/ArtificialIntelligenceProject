@@ -21,13 +21,16 @@ def idastar_search(maximum_depth , dim , startPoint , goalPoint , matrix, heuris
     goal_node = Node(goalPoint, None)
     
     #Loop for infinity
+    #visited = initDict(dim)
     while(1): 
         visited = initDict(dim)
-        
+        #visited[start_node.point] = True
+
         distance  = dfsContour(visited,dim,start_node, goal_node, matrix,heuristicMatrix,0,threshold)
-        if distance  == maximum_depth:
+        if distance  == float("inf"):
              return -1;                                           
-        elif distance  < 0:                               
+        elif distance  < 0:  
+            print('solotuion')                             
             return -distance
         
         else: 
@@ -36,7 +39,6 @@ def idastar_search(maximum_depth , dim , startPoint , goalPoint , matrix, heuris
     
 def dfsContour(visited,dim , currentNode , goalNode , matrix,heuristicMatrix,distance,threshold):
      global start_node
-     
      opened = []
      
      opened.append(currentNode)
@@ -49,28 +51,40 @@ def dfsContour(visited,dim , currentNode , goalNode , matrix,heuristicMatrix,dis
    
      f = distance + heuristicMatrix[currentNode.point[0]][currentNode.point[1]]
      if f > threshold:
-         
-         print("Breached threshold with heuristic: " + str(f))
+         #visited[currentNode.point] = False
+         #print("Breached threshold with heuristic: " + str(f))
          return f
      
+    # visited[currentNode.point] = False
      min = float("inf")
      neighbourPoints = getNeighbours(dim,currentNode.point,matrix)
      
-     for neighbour in neighbourPoints: 
+     for neighbour in neighbourPoints:
+         
          neighborNode = Node(neighbour, currentNode)                   
          # try to visit a node in future, if not already been to it
          if(not(visited[neighbour])):
              
-             t = dfsContour(visited,dim , neighborNode , goalNode , matrix,heuristicMatrix,distance + matrix[neighborNode.point[0]][neighborNode.point[1]] ,threshold)
-             
-             if t < 0:
-                # Node found
-                return t
-             elif t < min:
-                min = t
              opened.append(neighborNode)
              visited[neighbour] = True
              
+             t = dfsContour(visited,dim , neighborNode , goalNode , matrix,
+                                heuristicMatrix,distance + matrix[neighborNode.point[0]][neighborNode.point[1]] ,threshold)
+             if t < 0:
+                #visited[neighborNode.point] = False
+                        # Node found
+                return t
+                
+             elif t < min:
+                 visited[neighborNode.point] = False
+                 #visited[neighborNode.point] = False
+                 min = t
+                 
+             else:
+                 visited[neighborNode.point] = False
+
+             #visited[neighborNode.point] = True
+
      return min
 
              
@@ -124,20 +138,6 @@ def dfsContour(visited,dim , currentNode , goalNode , matrix,heuristicMatrix,dis
         
      return False
 '''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Initilizing dictionary for visited nodes

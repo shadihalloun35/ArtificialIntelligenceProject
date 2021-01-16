@@ -40,7 +40,7 @@ path,expandedNodes = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, e
 
 #stop = timeit.default_timer()
 
-print(path)
+#print(path)
 #print('Time: ', stop - start)  
 
 
@@ -61,7 +61,7 @@ BackwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(startPoint,dim,matrix)
 # =============================================================================
 
 
-path,totalSumG = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
+#path,totalSumG = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
 #print(path)
 #print(totalSumG)
 
