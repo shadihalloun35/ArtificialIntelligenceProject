@@ -6,5 +6,5 @@ save_non_project_files = False
 
 [main]
 version = 0.2.0
-recent_files = ['..\\..\\..\\..\\Users\\shadi\\Desktop\\nlp\\hw5.py', '..\\..\\..\\..\\Users\\shadi\\Desktop\\nlp\\hw4.py']
+recent_files = ['main.py', 'IDASTAR.py', 'IDS.py', 'BIASTAR.py', 'ASTAR.py', 'HeuristicFunctions.py', 'Node.py', 'UCS.py', '..\\..\\..\\..\\Users\\shadi\\Desktop\\nlp\\hw4.py']
 

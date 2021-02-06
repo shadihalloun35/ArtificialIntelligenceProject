@@ -14,7 +14,7 @@ class Node:
         self.parent = parent
         self.g = 0 # g cost
         self.h = 0 # h cost
-        self.f = 0 # f cost
+        self.f = float("inf") # f cost
         self.d = 0
 
 

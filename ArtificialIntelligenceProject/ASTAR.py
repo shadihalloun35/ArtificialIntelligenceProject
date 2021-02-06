@@ -104,8 +104,7 @@ def remove_from_closed(closed,neighbor):
 
 # Finding the neighbours of the current point
 def getNeighbours(dim,currentNodePoint,matrix):
-   
-    
+
     myList = []
     for i in range(currentNodePoint[0]-1, currentNodePoint[0]+2):
         for j in range(currentNodePoint[1]-1, currentNodePoint[1]+2):

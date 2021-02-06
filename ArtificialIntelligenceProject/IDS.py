@@ -17,7 +17,7 @@ def ids_search(maximum_depth , dim , startPoint , goalPoint , matrix):
     global start_node
 
     # Create a start node and an goal node
-    start_node = Node(startPoint, (None))
+    start_node = Node(startPoint, None)
     goal_node = Node(goalPoint, None)
     
     #Loop for d from 1 to infinity

@@ -22,7 +22,7 @@ start = timeit.default_timer()
 #Your statements here
 
 
-f = open("firstInput.txt", "r")
+f = open("secondInput.txt", "r")
 savedInput  = f.read().splitlines()
 algorithm = savedInput[0]
 dim = int(savedInput[1])
@@ -31,8 +31,9 @@ startPoint = (int(startPoint_list[0]),int(startPoint_list[0]))
 goalPoint_list = savedInput[3].split(',')
 goalPoint = (int(goalPoint_list[0]),int(goalPoint_list[1]))
 matrix = [[int(num) for num in line.split(',')] for line in savedInput[4:]]
-#goalPoint = (4,4)
+#goalPoint = (6,6)
 #startPoint = (1,1)
+#goalPoint = (0,0)
 
 euclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
 #print(euclideanHeuristicMatrix)
@@ -40,9 +41,9 @@ path,expandedNodes = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, e
 
 #stop = timeit.default_timer()
 
-#print(path)
+print(path)
 #print('Time: ', stop - start)  
-
+print('------------------------------')
 
 #path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
 
