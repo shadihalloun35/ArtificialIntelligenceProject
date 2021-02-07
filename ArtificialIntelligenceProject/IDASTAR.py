@@ -21,10 +21,13 @@ def idastar_search(maximum_depth , dim , startPoint , goalPoint , matrix, heuris
     start_node = Node(startPoint, (None))
     goal_node = Node(goalPoint, None)
     
+    
     #Loop for infinity
     while(1): 
-
-        distance,found = dfsContour(dim,start_node, goal_node, matrix,heuristicMatrix,0,threshold)
+        
+        #visited = initDict(dim)
+        
+        distance,found = dfsContour(visited,dim,start_node, goal_node, matrix,heuristicMatrix,0,threshold)
         
         #print(distance)
         #print(found)
@@ -37,7 +40,7 @@ def idastar_search(maximum_depth , dim , startPoint , goalPoint , matrix, heuris
             threshold = distance  
     
     
-def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,threshold):
+def dfsContour(visited,dim , startNode , goalNode , matrix,heuristicMatrix,distance,threshold):
      global start_node
      opened = []
      
@@ -107,55 +110,6 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
      return minVal,False
              
              
-             
-'''
-     for i in range(len(tree[node])):
-        if tree[node][i] != 0:
-            t = iterative_deepening_a_star_rec(tree, heuristic, i, goal, distance + tree[node][i], threshold)
-            if t < 0:
-                # Node found
-                return t
-            elif t < min:
-                min = t
-                
-     # If reached the maximum depth, stop recursing. 
-     while len(opened) > 0:      
-         current = opened.pop(0) 
-         if current.d <= limit:
-            if current == goalNode:
-                pathlen = 0
-                path = []
-                while current != start_node:
-                    pathlen-=1
-                    x=-pathlen
-                    path.append(str(current.point) + ': ' + str(x))
-                    current = current.parent
-                x+=1    
-                path.append(str(start_node.point) + ': ' + str(x))
-                    
-                    # Return reversed path
-                print( path[::-1])
-                
-                print("Goal Node Found")
-                return True      
-            else:             
-                # Get neighbours
-                neighbourPoints = getNeighbours(dim,current.point,matrix)
-                for  neighbour in neighbourPoints: 
-                    neighborNode = Node(neighbour, current)                   
-                    # try to visit a node in future, if not already been to it
-                    if(not(visited[neighbour])):
-                        neighborNode.d = current.d + 1 
-                        opened.append(neighborNode)
-                        visited[neighbour] = True
-                           
-         else:
-            print("Not found within depth limit",current.d)
-            return False
-        
-     return False
-'''
-
 
 # Initilizing dictionary for visited nodes
 def initDict(dim):
@@ -182,180 +136,3 @@ def initDict(dim):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-# IDA* algorithm
-def idastar_search(maximum_depth , dim , startPoint , goalPoint , matrix, heuristicMatrix):
-    
-    threshold = heuristicMatrix[startPoint[0]][startPoint[1]]
-    
-    # Create a start node and an goal node
-    start_node = Node(startPoint, (None))
-    goal_node = Node(goalPoint, None)
-    
-    mySolotuion = initDict(dim)
-    #Loop for infinity
-    while(1): 
-            
-        distance  = dfsContour(mySolotuion,dim,start_node, goal_node, matrix,heuristicMatrix,0,threshold)
-       
-        print(distance)
-        if distance  == float("inf"):
-             return -1;     
-                                      
-        elif distance  < 0:  
-            print('solotuion')                             
-            return -distance
-       
-        else: 
-            threshold = distance  
-    
-    
-def dfsContour(mySolotuion,dim , currentNode , goalNode , matrix,heuristicMatrix,distance,threshold):
-     
-     
-     
-     if currentNode == goalNode:
-        # We have found the goal node we we're searching for
-        return -distance
-    
-    
-     f = distance + heuristicMatrix[currentNode.point[0]][currentNode.point[1]]
-     
-     #mySolotuion[currentNode.point] = f
-     
-     currentNode.g = distance
-     
-     if f > currentNode.f:
-          return threshold
-      
-     else:          
-          currentNode.f = f
-     
-        
-     if f > threshold:
-         return f
-     
-     min_f = float("inf")
-     
-     neighbourPoints = getNeighbours(dim,currentNode.point,matrix)
-
-     
-     while (1):
-         
-         for neighbour in neighbourPoints:
-             
-             neighborNode = Node(neighbour, currentNode)                   
-             neighborNode.g = currentNode.g + matrix[neighborNode.point[0]][neighborNode.point[1]] 
-             
-             currentNode = neighborNode
-             
-             f = currentNode.g + heuristicMatrix[currentNode.point[0]][currentNode.point[1]]
-             
-             if f > currentNode.f:
-                 t = threshold
-      
-             else:          
-                 currentNode.f = f
-             
-             if f > threshold:
-                 t = f
-                 
-                 if t < 0:
-                     return t
-                   
-                 elif t < min_f:
-                     min_f = t
-                     
-             elif currentNode == goalNode:
-                 # We have found the goal node we we're searching for
-                 return -currentNode.g
-              
-             else:
-                 min_f = float("inf")
-                 neighbourPoints = getNeighbours(dim,currentNode.point,matrix)
-                 break
-                                                      
-         t = min_f
-         print(t)
-    
-                 
-             
-             
-             
-
-     for i in range(len(tree[node])):
-        if tree[node][i] != 0:
-            t = iterative_deepening_a_star_rec(tree, heuristic, i, goal, distance + tree[node][i], threshold)
-            if t < 0:
-                # Node found
-                return t
-            elif t < min:
-                min = t
-                
-     # If reached the maximum depth, stop recursing. 
-     while len(opened) > 0:      
-         current = opened.pop(0) 
-         if current.d <= limit:
-            if current == goalNode:
-                pathlen = 0
-                path = []
-                while current != start_node:
-                    pathlen-=1
-                    x=-pathlen
-                    path.append(str(current.point) + ': ' + str(x))
-                    current = current.parent
-                x+=1    
-                path.append(str(start_node.point) + ': ' + str(x))
-                    
-                    # Return reversed path
-                print( path[::-1])
-                
-                print("Goal Node Found")
-                return True      
-            else:             
-                # Get neighbours
-                neighbourPoints = getNeighbours(dim,current.point,matrix)
-                for  neighbour in neighbourPoints: 
-                    neighborNode = Node(neighbour, current)                   
-                    # try to visit a node in future, if not already been to it
-                    if(not(visited[neighbour])):
-                        neighborNode.d = current.d + 1 
-                        opened.append(neighborNode)
-                        visited[neighbour] = True
-                           
-         else:
-            print("Not found within depth limit",current.d)
-            return False
-        
-     return False
-
-
-
-# Initilizing dictionary for visited nodes
-def initDict(dim):
-
-    myDict = dict()
-
-    for i in range(0,dim):
-        for j in range(0,dim):
-            myDict[(i,j)] = 0
-
-    return myDict
-
-'''

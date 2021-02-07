@@ -6,6 +6,8 @@ Created on Mon Jan 11 19:02:24 2021
 
 
 from Node import Node
+from ASTAR import getNeighbours
+from ASTAR import add_to_open
 import sys
 
 # Bidirectional A* algorithm
@@ -41,24 +43,31 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
     backwardOpened.append(goal_node)
     
     # Loop until the open list is empty
-    while len(forwardOpened) > 0 and len(backwardOpened) > 0:  ###### or not and
+    while len(forwardOpened) > 0 or len(backwardOpened) > 0:  ###### or not and
         
         # Sort the open list to get the node with the lowest cost first
         forwardOpened.sort()
         backwardOpened.sort()
 
         # Get the node with the lowest cost
-        current_node_forward = forwardOpened.pop(0)
-        current_node_backward = backwardOpened.pop(0)
+        if len(forwardOpened) > 0:
+            current_node_forward = forwardOpened.pop(0)
+            
+        if len(backwardOpened) > 0:  
+            current_node_backward = backwardOpened.pop(0)
 
         # Add the current node to the closed list
-        forwardClosed.append(current_node_forward)
-        backwardClosed.append(current_node_backward)
+        if len(forwardOpened) > 0:
+            forwardClosed.append(current_node_forward)
+            
+        if len(backwardOpened) > 0:  
+            backwardClosed.append(current_node_backward)
 
         expandedNodes += 2
          
         # Get neighbours
         neighborPointsForward = getNeighbours(dim,current_node_forward.point,matrix)
+        
         neighborPointsBackward = getNeighbours(dim,current_node_backward.point,matrix)
 
         # Loop neighbors forward
@@ -117,23 +126,16 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
                 
         # After Node was found in both closed lists
         if current_node_backward in forwardClosed:
-            path = findpath(goal_node,start_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint)
-            return path 
+            path,totalSumG = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint)
+            return path,totalSumG
         
         if current_node_forward in backwardClosed :            
-            path = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint)
-            return path   
+            path,totalSumG = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint)
+            return path,totalSumG
         
         
     # Return None, no path is found
     return None
-
-# Check if a neighbor should be added to open list
-def add_to_open(opened, neighbor):
-    for node in opened:
-        if (neighbor == node and neighbor.f > node.f):
-            return False
-    return True
 
 # Check if a neighbor should be removed from closed list
 def remove_from_closed(closed,neighbor):
@@ -141,35 +143,35 @@ def remove_from_closed(closed,neighbor):
         if (neighbor == node and neighbor.f > node.f):
             return True
     return False
-
-# Finding the neighbours of the current point
-def getNeighbours(dim,currentNodePoint,matrix):
-    myList = []
-    for i in range(currentNodePoint[0]-1, currentNodePoint[0]+2):
-        for j in range(currentNodePoint[1]-1, currentNodePoint[1]+2):
-            if i >= 0 and i < dim and j >= 0 and j < dim and matrix[i][j] != -1 and (i != currentNodePoint[0] or j != currentNodePoint[1]):
-                myList.append((i,j))  
-
-    return myList     
-
+ 
 def findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint):
     pathForward = []
     pathBackward = []
     totalSumG = 0
-        
+    forawrdNodes = forwardOpened + forwardClosed
+    backwardsNodes = backwardOpened + backwardClosed
     minValue = sys.maxsize
-    minNodeOpen = Node(None,None)
-    minNodeClosed = Node(None,None)
-        
-      
-    for nodeOpen in forwardOpened:
-        for nodeClosed in backwardClosed:
-            if nodeOpen == nodeClosed:
-                if (nodeOpen.f + nodeClosed.f) < minValue:
-                    minValue = nodeOpen.f + nodeClosed.f
-                    minNodeOpen = nodeOpen
-                    minNodeClosed = nodeClosed
-    
+    minNodeForward = Node(None,None)
+    minNodeBackward = Node(None,None)
+    '''
+    print('Forward opened:',forwardOpened)
+    print('------------------')
+    print('backward opend:',backwardOpened)
+    print('------------------')
+    print('Forwad closed:',forwardClosed)
+    print('------------------')
+    print('backward closed:',backwardClosed)
+    print('------------------')
+    '''
+    for nodeForward in forawrdNodes:
+        for nodeBackward in backwardsNodes:           
+            if nodeForward == nodeBackward:
+                if (nodeForward.f + nodeBackward.f) < minValue:
+                   # print('hhhhhhhhhhhhhhhhhhhhhh')
+                    minValue = nodeForward.f + nodeBackward.f
+                    minNodeForward = nodeForward
+                    minNodeBackward = nodeBackward
+                    '''   
     for nodeOpen in backwardOpened:
         for nodeClosed in forwardClosed:
             if nodeOpen == nodeClosed:
@@ -177,26 +179,23 @@ def findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,bac
                     minValue = nodeOpen.f + nodeClosed.f
                     minNodeOpen = nodeOpen
                     minNodeClosed = nodeClosed
-
-    i = 0    
-    while minNodeOpen != start_node:
-        if i == 0:
-            savedForwardNode = minNodeOpen
-            #pathForward.append('=================')
-            i = 1
-            
-        pathForward.append(str(minNodeOpen.point) + ': ' + str(minNodeOpen.g))
-        minNodeOpen = minNodeOpen.parent        
+                    '''
+   
+    #print(minNodeForward)
+    #print(start_node)
+    #print(goal_node)
+    savedForwardNode = minNodeForward
+    while minNodeForward != start_node:
+        
+        pathForward.append(str(minNodeForward.point) + ': ' + str(minNodeForward.g))
+        minNodeForward = minNodeForward.parent        
         
     pathForward.append(str(start_node.point) + ': ' + str(start_node.g))
 
-    i = 0
-    while minNodeClosed != goal_node:
-        if i == 0:
-            savedBackwardNode = minNodeClosed
-            i = 1
-        pathBackward.append(str(minNodeClosed.point) + ': ' + str(minNodeClosed.g))
-        minNodeClosed = minNodeClosed.parent
+    savedBackwardNode = minNodeBackward
+    while minNodeBackward != goal_node:
+        pathBackward.append(str(minNodeBackward.point) + ': ' + str(minNodeBackward.g))
+        minNodeBackward = minNodeBackward.parent
 
     pathBackward.append(str(goal_node.point) + ': ' + str(goal_node.g))
  
@@ -205,10 +204,9 @@ def findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,bac
         pathForward.pop(0)
     else:
         pathBackward.pop(0)
-        
+    
     # Total cost of the path
     totalSumG = int(pathBackward[0].split(':')[1]) + int(pathForward[0].split(':')[1]) + matrix[goalPoint[0]][goalPoint[1]]
-   
     # Return reversed path
-    return  pathBackward[::-1] + pathForward,totalSumG
-    
+    #return  pathBackward[::-1] + pathForward,totalSumG
+    return  pathForward[::-1] + pathBackward,totalSumG

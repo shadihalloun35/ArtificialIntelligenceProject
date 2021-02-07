@@ -22,7 +22,7 @@ start = timeit.default_timer()
 #Your statements here
 
 
-f = open("secondInput.txt", "r")
+f = open("firstInput.txt", "r")
 savedInput  = f.read().splitlines()
 algorithm = savedInput[0]
 dim = int(savedInput[1])
@@ -33,7 +33,7 @@ goalPoint = (int(goalPoint_list[0]),int(goalPoint_list[1]))
 matrix = [[int(num) for num in line.split(',')] for line in savedInput[4:]]
 #goalPoint = (6,6)
 #startPoint = (1,1)
-#goalPoint = (0,0)
+#goalPoint = (1,0)
 
 euclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
 #print(euclideanHeuristicMatrix)
@@ -62,17 +62,17 @@ BackwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(startPoint,dim,matrix)
 # =============================================================================
 
 
-#path,totalSumG = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
-#print(path)
-#print(totalSumG)
+path,totalSumG = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
+print(path)
+print(totalSumG)
 
 #path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
 
 
 
-path = IDASTAR.idastar_search(sys.maxsize, dim, startPoint, goalPoint, matrix, euclideanHeuristicMatrix)
+#path = IDASTAR.idastar_search(sys.maxsize, dim, startPoint, goalPoint, matrix, euclideanHeuristicMatrix)
 
-print(path)
+#print(path)
 
 
 
