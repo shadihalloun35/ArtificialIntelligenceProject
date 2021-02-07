@@ -32,7 +32,6 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
     
     # Loop until the open list is empty
     while len(opened) > 0:
-        
         # Sort the open list to get the node with the lowest cost first
         opened.sort()
         
@@ -47,17 +46,21 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
         if current_node == goal_node:
         
             path = []
+            trackingpath = []
+            cost = current_node.g
+            
             while current_node != start_node:
                 path.append(str(current_node.point) + ': ' + str(current_node.g))
+                trackingpath.append(current_node.point)
                 current_node = current_node.parent
             path.append(str(start_node.point) + ': ' + str(start_node.g))
-            
+            trackingpath.append(start_node.point)
+
             # Return reversed path
-            return path[::-1],expandedNodes
+            return path[::-1],expandedNodes,trackingpath[::-1],cost
         
         # Get neighbours
         neighborPoints = getNeighbours(dim,current_node.point,matrix)
-         
         # Loop neighbors
         for myPoint in neighborPoints:
             # Create a neighbor node
@@ -74,7 +77,7 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
                 #    closed.remove(neighborNode)
                  #   opened.append(neighborNode)
                 continue
-            
+
             # Check if neighbor is in open list and if it has a lower f value
             if(add_to_open(opened, neighborNode) == True):
                 
@@ -84,9 +87,8 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
                     
                 # Add neighbor to open list
                 opened.append(neighborNode)
-                
     # Return None, no path is found
-    return None
+    return -1,-1
 
 # Check if a neighbor should be added to open list
 def add_to_open(opened, neighbor):

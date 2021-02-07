@@ -21,29 +21,25 @@ def idastar_search(maximum_depth , dim , startPoint , goalPoint , matrix, heuris
     start_node = Node(startPoint, (None))
     goal_node = Node(goalPoint, None)
     
-    
     #Loop for infinity
     while(1): 
-        
-        #visited = initDict(dim)
-        
-        distance,found = dfsContour(visited,dim,start_node, goal_node, matrix,heuristicMatrix,0,threshold)
+
+        trackingpath,cost,expandedNodes,distance,found = dfsContour(dim,start_node, goal_node, matrix,heuristicMatrix,0,threshold)
         
         #print(distance)
         #print(found)
 
         if found == True:
-            print('solotuion')                             
-            return True
+            return distance,expandedNodes,trackingpath[::-1],cost
         
         else: 
             threshold = distance  
     
     
-def dfsContour(visited,dim , startNode , goalNode , matrix,heuristicMatrix,distance,threshold):
+def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,threshold):
      global start_node
      opened = []
-     
+     expandedNodes = 0
      opened.append(startNode)
      
      startNode.f = distance + heuristicMatrix[startNode.point[0]][startNode.point[1]]
@@ -66,20 +62,23 @@ def dfsContour(visited,dim , startNode , goalNode , matrix,heuristicMatrix,dista
          currentNode = opened.pop(0) 
          #print(len(opened))
          if currentNode.f <= threshold:
-             
+             expandedNodes += 1
              if currentNode == goalNode:
                     # We have found the goal node we we're searching for
                 path = []
+                trackingpath = []
+                cost = currentNode.g
                 while currentNode != startNode:
                      path.append(str(currentNode.point) + ': ' + str(currentNode.g))
+                     trackingpath.append(currentNode.point)
                      currentNode = currentNode.parent
+                     
                 path.append(str(startNode.point) + ': ' + str(startNode.g))
-                    
+                trackingpath.append(startNode.point)
+                
                 # Return reversed path
                 print(path[::-1])
-                
-                print("Goal Node Found")
-                return path[::-1],True         
+                return trackingpath,cost,expandedNodes,path[::-1],True         
                           
              minVal = float("inf")
              neighbourPoints = getNeighbours(dim,currentNode.point,matrix)
@@ -107,7 +106,7 @@ def dfsContour(visited,dim , startNode , goalNode , matrix,heuristicMatrix,dista
                 minVal = currentNode.f
           
     # print('minval : ',minVal)            
-     return minVal,False
+     return -1,-1,-1,minVal,False
              
              
 
