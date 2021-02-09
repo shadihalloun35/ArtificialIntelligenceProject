@@ -42,6 +42,9 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
      opened = []
      cost = 0
 
+     # Variable for max depth
+     maximumDepth = 0
+     
      opened.append(currentNode)
      visited[currentNode.point] = True
       
@@ -51,6 +54,11 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
   
      while len(opened) > 0:      
          current = opened.pop(0) 
+         
+         # Updating the maximum depth
+         if maximumDepth < current.d:
+             maximumDepth = current.d
+             
          if current.d <= limit:
             if current == goalNode:
                 pathlen = 0
@@ -85,6 +93,7 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
                     if(not(visited[neighbour])):
                         expandedNodes += 1
                         neighborNode.d = current.d + 1 
+                        
                         opened.append(neighborNode)
                         visited[neighbour] = True
                            

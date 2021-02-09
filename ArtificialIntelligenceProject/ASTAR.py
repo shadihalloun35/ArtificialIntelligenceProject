@@ -7,16 +7,43 @@ Created on Thu Jan  7 00:07:56 2021
 
 
 from Node import Node
+import heapq 
+import sys
 
 # A* algorithm
 def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
    
-    # Counter for the expanded nodes
+    # Number of the expanded nodes
     expandedNodes = 0
+    
+    # Number of the scanned nodes
+    scannedNodes = 0
+    
+    # Variable for max depth
+    maximumDepth = 0
+    
+    # Variable for min depth
+    minimumDepth = sys.maxsize
+    
+    
+    # Variable for min depth
+    averageDepth = 0
+    
+    # Variable for the sum of the depth of the nodes that have been expanded
+    SumDepth = 0
+    
+    # Variable for the Penetration Ratio (d/N)
+    PenetrationRatio = -1
+    
+    # Previous Node
+    previousNode = Node(None,None)
     
     # Create lists for open nodes and closed nodes
     opened = []
     closed = []
+    
+    # using heapify() to convert list into heap 
+    heapq.heapify(opened) 
     
     # Create a start node and an goal node
     start_node = Node(startPoint, (None))
@@ -26,25 +53,48 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
     start_node.g = 0
     start_node.h = heuristicMatrix[startPoint[0]][startPoint[1]]
     start_node.f = start_node.g + start_node.h
-     
+    start_node.d = 0
+    
     # Add the start node
-    opened.append(start_node)
+    # Using heappush() to push elements into heap 
+    heapq.heappush(opened,start_node) 
+    scannedNodes += 1
     
     # Loop until the open list is empty
     while len(opened) > 0:
-        # Sort the open list to get the node with the lowest cost first
-        opened.sort()
         
-        # Get the node with the lowest cost
-        current_node = opened.pop(0)
+        # Get the node with the lowest f cost
+        current_node = heapq.heappop(opened)
+        
+        # Updating the maximum depth
+        if maximumDepth < current_node.d:
+            maximumDepth = current_node.d
+          
+        # Updating the minimum depth
+        if current_node.parent != previousNode:
+            if minimumDepth > previousNode.d:
+                minimumDepth = previousNode.d
+            
+        
+        # Saving the previous node
+        previousNode = current_node
         
         # Add the current node to the closed list
         closed.append(current_node)
+        
+        # Calculating the sum of the depth of the nodes
+        SumDepth += current_node.d
+    
+        # This node have been expanded
         expandedNodes += 1
         
         # Check if we have reached the goal, return the path
         if current_node == goal_node:
         
+            # Updating the minimum depth
+            if minimumDepth > current_node.d:
+                minimumDepth = current_node.d
+                
             path = []
             trackingpath = []
             cost = current_node.g
@@ -56,11 +106,18 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
             path.append(str(start_node.point) + ': ' + str(start_node.g))
             trackingpath.append(start_node.point)
 
+            # Averange Depth
+            averageDepth = SumDepth/expandedNodes
+            
+            # Penetration Ratio
+            PenetrationRatio = maximumDepth/scannedNodes
+            
             # Return reversed path
-            return path[::-1],expandedNodes,trackingpath[::-1],cost
+            return path[::-1],expandedNodes,trackingpath[::-1],cost,scannedNodes,PenetrationRatio,maximumDepth,minimumDepth,averageDepth
         
         # Get neighbours
         neighborPoints = getNeighbours(dim,current_node.point,matrix)
+        
         # Loop neighbors
         for myPoint in neighborPoints:
             # Create a neighbor node
@@ -70,7 +127,9 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
             neighborNode.g = current_node.g + matrix[myPoint[0]][myPoint[1]]
             neighborNode.h = heuristicMatrix[myPoint[0]][myPoint[1]]
             neighborNode.f = neighborNode.g + neighborNode.h
+            neighborNode.d = current_node.d + 1
             
+                
             # Check if the neighbor is in the closed list
             if(neighborNode in closed):
                # if remove_from_closed(closed,neighborNode):
@@ -86,9 +145,17 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix):
                     opened.remove(neighborNode)
                     
                 # Add neighbor to open list
-                opened.append(neighborNode)
+                heapq.heappush(opened,neighborNode) 
+                scannedNodes += 1
+
+    # Averange Depth
+    averageDepth = SumDepth/expandedNodes
+            
+    # Penetration Ratio
+    PenetrationRatio = maximumDepth/scannedNodes
+            
     # Return None, no path is found
-    return -1,-1
+    return -1,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,maximumDepth,minimumDepth,averageDepth
 
 # Check if a neighbor should be added to open list
 def add_to_open(opened, neighbor):

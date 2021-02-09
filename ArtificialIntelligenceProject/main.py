@@ -23,7 +23,7 @@ start = timeit.default_timer()
 
 def findTrackingpath(trackingpath):
     trackSet = ''
-    startingPoint = trackingpath[0]
+    
     for i in range(len(trackingpath) - 1):
         
         if trackingpath[i][0] < trackingpath[i+1][0] and trackingpath[i][1] < trackingpath[i+1][1]:
@@ -68,7 +68,7 @@ trackingpath = []
 
 if algorithm == 'ASTAR':
     euclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
-    path,expandedNodes,trackingpath,cost = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix)
+    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix)
 
 elif algorithm == 'UCS':
     path,expandedNodes,trackingpath,cost = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
@@ -91,21 +91,21 @@ runTime = stop - start
 
 if runTime < limitedRunTime:
     print(path)
+    print(scannedNodes,PenetrationRatio)
     print('Time:', runTime,'seconds')
 else:
     print('FAILED')
 
 output = open("outPut.txt", "w")
-trackPath = findTrackingpath(trackingpath)
 
-trackPath = trackPath + ' ' + str(cost) + ' ' + str(expandedNodes)
-print(trackPath)
-output.write(trackPath)
-
-
-
-
-
+if trackingpath != -1:
+    trackPath = findTrackingpath(trackingpath)
+    trackPath = trackPath + ' ' + str(cost) + ' ' + str(expandedNodes)
+    print(trackPath)
+    output.write(trackPath)
+    
+else:
+    print('No path has been found !')
 
 output.close()
 
