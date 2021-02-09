@@ -15,7 +15,7 @@ class Node:
         self.g = 0 # g cost
         self.h = 0 # h cost
         self.f = float("inf") # f cost
-        self.d = 0
+        self.d = 1
 
 
     # Compare nodes

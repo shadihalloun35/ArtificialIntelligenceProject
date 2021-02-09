@@ -24,21 +24,20 @@ def calcEuclideanHeuristic(goal,dim , matrix):
 
    return euclideanHeuristicMatrix
 
-'''   
-def calcBackwardEuclideanHeuristic(start,goal,dim , matrix):
-   euclideanHeuristicMatrix = []
-
-   for i in range(dim,0,-1):
-       euclideanRow = []
-       for j in range (dim,0,-1):
-           x = start[0]+1 - i
-           y = start[1]+1 - j
+# Heuristic Function #1 using Manhattan Distance
+def calcManhattanHeuristic(goal,dim , matrix):
+   manhattanHeuristicMatrix = []
+    
+   for i in range(1,dim+1):
+       manhattanRow = []
+       for j in range (1,dim+1):
+           deltax = abs(goal[0]+1 - i)
+           deltay = abs(goal[1]+1 - j)
            
-           #Pythagoras Formula
-           euclideanDistance = math.sqrt(x**2 + y**2)
-           euclideanRow.append(euclideanDistance)
+           #Manhattan Formula
+           manhattanDistance = deltax + deltay
+           manhattanRow.append(manhattanDistance)
            
-       euclideanHeuristicMatrix.append(euclideanRow)
+       manhattanHeuristicMatrix.append(manhattanRow)
 
-   return euclideanHeuristicMatrix
-'''
+   return manhattanHeuristicMatrix

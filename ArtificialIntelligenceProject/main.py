@@ -11,11 +11,12 @@ import IDASTAR
 import math
 import sys
 import UCS
+import timeit
 
 from HeuristicFunctions import calcEuclideanHeuristic
-#from HeuristicFunctions import calcBackwardEuclideanHeuristic
+from HeuristicFunctions import calcManhattanHeuristic
 
-import timeit
+
 
 start = timeit.default_timer()
 
@@ -68,22 +69,27 @@ trackingpath = []
 
 if algorithm == 'ASTAR':
     euclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
-    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix)
+    runningTimeAllowed = (dim/60) * 15
+    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix,runningTimeAllowed,start)
 
 elif algorithm == 'UCS':
-    path,expandedNodes,trackingpath,cost = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
+    runningTimeAllowed = (dim/60) * 20
+    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth = UCS.ucs_search(dim , startPoint , goalPoint , matrix,runningTimeAllowed,start)
 
 elif algorithm == 'IDS':
-    path,expandedNodes,trackingpath,cost = IDS.ids_search(sys.maxsize , dim , startPoint , goalPoint , matrix)
+    runningTimeAllowed = (dim/60) * 30
+    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth = IDS.ids_search(sys.maxsize , dim , startPoint , goalPoint , matrix,runningTimeAllowed,start)
 
 elif algorithm == 'BIASTAR':
     ForwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
     BackwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(startPoint,dim,matrix)
-    path,expandedNodes,trackingpath,cost = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
+    runningTimeAllowed = (dim/60) * (10)
+    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix,runningTimeAllowed,start)
 
 elif algorithm == 'IDASTAR':
     euclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
-    path,expandedNodes,trackingpath,cost = IDASTAR.idastar_search(sys.maxsize, dim, startPoint, goalPoint, matrix, euclideanHeuristicMatrix)
+    runningTimeAllowed = (dim/60) * (350)
+    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth = IDASTAR.idastar_search(sys.maxsize, dim, startPoint, goalPoint, matrix, euclideanHeuristicMatrix,runningTimeAllowed,start)
 
 
 stop = timeit.default_timer()
@@ -91,7 +97,7 @@ runTime = stop - start
 
 if runTime < limitedRunTime:
     print(path)
-    print(scannedNodes,PenetrationRatio)
+    print(scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth)
     print('Time:', runTime,'seconds')
 else:
     print('FAILED')

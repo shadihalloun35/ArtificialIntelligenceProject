@@ -10,16 +10,48 @@ from ASTAR import getNeighbours
 from ASTAR import add_to_open
 import sys
 import heapq 
+import timeit
 
 # Bidirectional A* algorithm
-def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix,backwardHeuristicMatrix):
+def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix,backwardHeuristicMatrix,runningTimeAllowed,start):
    
+    # If there is no parent
+    NoneParent = Node((-1,-1),(-1,-1))
+    
     # Counter for the expanded nodes
     expandedNodes = 0
     
     # Variable for max depth
     maximumDepth = 0
     
+    # Number of the scanned nodes
+    scannedNodes = 0
+    
+    # Variable for min depth
+    minimumDepth = sys.maxsize
+    
+    # Variable for the sum of the depth of the nodes that have been expanded
+    SumDepth = 0
+
+    # Effective Branching Factor
+    ebf = 1
+            
+    # Variable for the sum of the heuristic values of the nodes that have been expandeds
+    SumHeuristicValues = 0
+    
+    # Variable for average heuristic values
+    averageHeuristicValues = 1
+    
+    # Variable for average depth
+    averageDepth = 0
+    
+    # Variable for the Penetration Ratio (d/N)
+    PenetrationRatio = 1
+    
+    # Previous Node
+    previousNodeForward = Node((-1,-1),None)
+    previousNodeBackward = Node((-1,-1),None)
+
     # Create lists for open nodes and closed nodes for forward direction 
     forwardOpened = []
     forwardClosed = []
@@ -34,34 +66,42 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
     heapq.heapify(backwardOpened) 
 
     # Initlizing the starting and goal nodes
-    start_node = Node(startPoint, None)
-    goal_node = Node(goalPoint, None)
+    start_node = Node(startPoint, NoneParent)
+    goal_node = Node(goalPoint, NoneParent)
     
     # Calculate start_node cost foward way
     start_node.g = 0
     start_node.h = forwardHeuristicMatrix[startPoint[0]][startPoint[1]]
+    SumHeuristicValues += start_node.h
     start_node.f = start_node.g + start_node.h
-    start_node.d = 0
 
     # Calculate start_node cost backward way
     goal_node.g = 0
     goal_node.h = backwardHeuristicMatrix[goalPoint[0]][goalPoint[1]]
+    SumHeuristicValues += goal_node.h
     goal_node.f = goal_node.g + goal_node.h
-    goal_node.d = 0
 
 
     # Add the start node
 
-    heapq.heappush(forwardOpened,start_node) 
+    heapq.heappush(forwardOpened,start_node)
+    scannedNodes += 1
+
     heapq.heappush(backwardOpened,goal_node) 
+    scannedNodes += 1
+
 
     # Checking if we can access to the goal point
     if matrix[goalPoint[0]][goalPoint[1]] == -1:
-        return -1,-1,-1,-1
+        return -1,-1,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
     
     # Loop until the open list is empty
     while len(forwardOpened) > 0 or len(backwardOpened) > 0:
         
+        # Checking if the time has excceded
+        if timeit.default_timer() - start > runningTimeAllowed:
+            return -2,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+
         # Get the node with the lowest cost
         if len(forwardOpened) > 0:
             expandedNodes += 1
@@ -70,20 +110,40 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
             # Updating the maximum depth
             if maximumDepth < current_node_forward.d:
                 maximumDepth = current_node_forward.d
+                
+            # Updating the minimum depth
+            if current_node_forward.parent != previousNodeForward:
+                if minimumDepth > previousNodeForward.d:
+                    minimumDepth = previousNodeForward.d
+                        
+            # Saving the previous node
+            previousNodeForward = current_node_forward
             
             
         if len(backwardOpened) > 0:  
             expandedNodes += 1
             current_node_backward = heapq.heappop(backwardOpened)
+            
             # Updating the maximum depth
             if maximumDepth < current_node_backward.d:
                 maximumDepth = current_node_backward.d
+                
+            # Updating the minimum depth
+            if current_node_backward.parent != previousNodeBackward:
+                if minimumDepth > previousNodeBackward.d:
+                    minimumDepth = previousNodeBackward.d
+                        
+            # Saving the previous node
+            previousNodeBackward = current_node_backward
 
         # Add the current node to the closed list
         forwardClosed.append(current_node_forward)
         backwardClosed.append(current_node_backward)
         
-                
+        # Calculating the sum of the depth of the nodes
+        SumDepth += current_node_forward.d                
+        SumDepth += current_node_backward.d
+        
         # Get neighbours
         neighborPointsForward = getNeighbours(dim,current_node_forward.point,matrix)       
         neighborPointsBackward = getNeighbours(dim,current_node_backward.point,matrix)
@@ -96,6 +156,7 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
             # Calculate full path cost
             neighborNodeForward.g = current_node_forward.g + matrix[myPointForward[0]][myPointForward[1]]
             neighborNodeForward.h = forwardHeuristicMatrix[myPointForward[0]][myPointForward[1]]
+            SumHeuristicValues += neighborNodeForward.h
             neighborNodeForward.f = neighborNodeForward.g + neighborNodeForward.h
             neighborNodeForward.d = current_node_forward.d + 1
             
@@ -115,6 +176,7 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
                     
                 # Add neighbor to open list
                 heapq.heappush(forwardOpened,neighborNodeForward) 
+                scannedNodes += 1
 
           
         for myPointBackward in neighborPointsBackward:
@@ -124,6 +186,7 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
             # Calculate full path cost
             neighborNodeBackward.g = current_node_backward.g + matrix[myPointBackward[0]][myPointBackward[1]]
             neighborNodeBackward.h = backwardHeuristicMatrix[myPointBackward[0]][myPointBackward[1]]
+            SumHeuristicValues += neighborNodeBackward.h
             neighborNodeBackward.f = neighborNodeBackward.g + neighborNodeBackward.h
             neighborNodeBackward.d = current_node_backward.d + 1
 
@@ -143,18 +206,62 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
                     
                 # Add neighbor to open list
                 heapq.heappush(backwardOpened,neighborNodeBackward) 
+                scannedNodes += 1
 
                 
                 
         # After Node was found in both closed lists
         if current_node_backward in forwardClosed:
             path,trackingpath,totalSumG = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint)
-            return path,expandedNodes,trackingpath,totalSumG
+            
+            # Updating the minimum depth
+            if minimumDepth > current_node_backward.d:
+                minimumDepth = current_node_backward.d
+                
+            # Averange Depth
+            averageDepth = SumDepth/expandedNodes
+            
+            # Averange Heuristic Values
+            averageHeuristicValues = SumHeuristicValues/scannedNodes
+            
+            # Penetration Ratio
+            PenetrationRatio = maximumDepth/scannedNodes
+            
+            # Effective Branching Factor
+            ebf = scannedNodes ** (1/current_node_backward.d)
+            
+            return path,expandedNodes,trackingpath,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
         
         if current_node_forward in backwardClosed :            
             path,trackingpath,totalSumG = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint)
-            return path,expandedNodes,trackingpath,totalSumG
+            
+            # Updating the minimum depth
+            if minimumDepth > current_node_forward.d:
+                minimumDepth = current_node_forward.d
+              
+            # Averange Depth
+            averageDepth = SumDepth/expandedNodes
+            
+            # Averange Heuristic Values
+            averageHeuristicValues = SumHeuristicValues/scannedNodes
+            
+            # Penetration Ratio
+            PenetrationRatio = maximumDepth/scannedNodes
+            
+            # Effective Branching Factor
+            ebf = scannedNodes ** (1/current_node_forward.d)
+    
+            return path,expandedNodes,trackingpath,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
         
+    # Averange Depth
+    averageDepth = SumDepth/expandedNodes
+    
+    # Penetration Ratio
+    PenetrationRatio = maximumDepth/scannedNodes
+    
+    # Effective Branching Factor
+    ebf = scannedNodes ** (1/current_node_forward.d)
+    
     # Return None, no path is found
     return -1,-1,-1,-1
 
