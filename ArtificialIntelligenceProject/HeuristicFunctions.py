@@ -24,7 +24,7 @@ def calcEuclideanHeuristic(goal,dim , matrix):
 
    return euclideanHeuristicMatrix
 
-# Heuristic Function #1 using Manhattan Distance
+# Heuristic Function #2 using Manhattan Distance
 def calcManhattanHeuristic(goal,dim , matrix):
    manhattanHeuristicMatrix = []
     
@@ -35,9 +35,37 @@ def calcManhattanHeuristic(goal,dim , matrix):
            deltay = abs(goal[1]+1 - j)
            
            #Manhattan Formula
-           manhattanDistance = deltax + deltay
+           manhattanDistance = (deltax + deltay)/(dim+1)#math.sqrt(dim**2 + dim**2)
            manhattanRow.append(manhattanDistance)
            
        manhattanHeuristicMatrix.append(manhattanRow)
 
    return manhattanHeuristicMatrix
+
+
+# Heuristic Function #3 using Cosine Similarity
+def calcCosineHeuristic(goal,dim , matrix):
+   cosineHeuristicMatrix = []
+    
+   for i in range(0,dim):
+       cosineRow = []
+       for j in range (0,dim):
+           
+           # Dot Product of Two vectors
+           numerator = i * goal[0] + j * goal[1]
+           
+           # The sum of the length of the vectors
+           denominator  = math.sqrt(i**2 + j**2) * math.sqrt(goal[0]**2 + goal[1]**2)
+           
+           #Cosine Similarity Formula
+           if denominator != 0:
+               cosineSimilarity = numerator/denominator
+           else:
+               cosineSimilarity = math.sqrt(goal[0]**2 + goal[1]**2)
+               
+           cosineDistance = (math.cos(cosineSimilarity))/math.pi
+           cosineRow.append(cosineDistance)
+           
+       cosineHeuristicMatrix.append(cosineRow)
+
+   return cosineHeuristicMatrix

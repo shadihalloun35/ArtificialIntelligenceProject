@@ -26,6 +26,9 @@ def ids_search(maximum_depth , dim , startPoint , goalPoint , matrix,runningTime
     global minimumDepth 
     global averageDepth 
     global maximumDepth 
+    global averageHeuristicValues 
+    global ebf 
+    global PenetrationY 
     
     # If there is no parent
     NoneParent = Node((-1,-1),(-1,-1))
@@ -39,11 +42,11 @@ def ids_search(maximum_depth , dim , startPoint , goalPoint , matrix,runningTime
         
         # Checking if the time has excceded
         if timeit.default_timer() - start > runningTimeAllowed:
-            return -2,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+            return -2,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
         
         visited = initDict(dim)
         if dls_search(visited,dim,start_node, goal_node, matrix,d): 
-            return path[::-1],expandedNodes,trackingpath[::-1],cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+            return path[::-1],expandedNodes,trackingpath[::-1],cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
     
     return False
 
@@ -58,8 +61,11 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
      global PenetrationRatio 
      global minimumDepth 
      global averageDepth 
-     global maximumDepth 
-     
+     global maximumDepth  
+     global averageHeuristicValues 
+     global ebf 
+     global PenetrationY 
+
      opened = []
      cost = 0
 
@@ -74,6 +80,9 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
     
      # Effective Branching Factor
      ebf = 1
+     
+     # Success
+     PenetrationY = 1
      
      # Variable for max depth
      maximumDepth = 0
@@ -101,9 +110,7 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
      visited[currentNode.point] = True
       
    
-  
-     # If reached the maximum depth, stop recursing. 
-  
+    
      while len(opened) > 0:      
          
          current = opened.pop(0) 
@@ -133,34 +140,38 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
                 pathlen = 0
                 path = []
                 trackingpath = []
+                
+                # Effective Branching Factor
+                ebf = scannedNodes ** (1/current.d)
+                
+                # Success
+                PenetrationY = current.d/scannedNodes
+     
                 while current != start_node:
+                    
                     pathlen -= 1
-                    x=-pathlen
+                    x =- pathlen
                     path.append(str(current.point) + ': ' + str(x))
                     current.g = matrix[current.point[0]][current.point[1]]
                     current.f = current.g
                     cost += current.g
                     trackingpath.append(current.point)
                     current = current.parent
+                    
                 x += 1    
                 start_node.g = matrix[start_node.point[0]][start_node.point[1]]
                 start_node.f = start_node.g
                 path.append(str(start_node.point) + ': ' + str(x))
                 trackingpath.append(start_node.point)
 
-                    # Return reversed path
-                #print( path[::-1])
-                #print("Goal Node Found")
                 
                 # Penetration Ratio
                 PenetrationRatio = maximumDepth/scannedNodes
                 
-                # Effective Branching Factor
-                ebf = scannedNodes ** (1/current.d)
-                
-                return True# path[::-1]#,expandedNodes,trackingpath[::-1],cost   
+                return True   
             
-            else:             
+            else:   
+                
                 # Get neighbours
                 neighbourPoints = getNeighbours(dim,current.point,matrix)
                 for  neighbour in neighbourPoints: 
@@ -190,6 +201,9 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
      # Effective Branching Factor
      ebf = scannedNodes ** (1/current.d)
             
+     # Success
+     PenetrationY = current.d/scannedNodes
+    
      return False
     
     
@@ -215,7 +229,9 @@ PenetrationRatio = 1
 minimumDepth  = 0
 averageDepth = 0
 maximumDepth = 0
-    
+averageHeuristicValues = 1
+ebf = 1
+PenetrationY = 1
     
     
 

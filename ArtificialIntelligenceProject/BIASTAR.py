@@ -36,6 +36,9 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
     # Effective Branching Factor
     ebf = 1
             
+    # Success
+    PenetrationY = 1
+            
     # Variable for the sum of the heuristic values of the nodes that have been expandeds
     SumHeuristicValues = 0
     
@@ -230,7 +233,10 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
             # Effective Branching Factor
             ebf = scannedNodes ** (1/current_node_backward.d)
             
-            return path,expandedNodes,trackingpath,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+            # Success
+            PenetrationY = current_node_backward.d/scannedNodes
+    
+            return path,expandedNodes,trackingpath,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
         
         if current_node_forward in backwardClosed :            
             path,trackingpath,totalSumG = findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,backwardClosed,matrix,goalPoint)
@@ -251,7 +257,10 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
             # Effective Branching Factor
             ebf = scannedNodes ** (1/current_node_forward.d)
     
-            return path,expandedNodes,trackingpath,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+            # Success
+            PenetrationY = current_node_forward.d/scannedNodes
+    
+            return path,expandedNodes,trackingpath,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
         
     # Averange Depth
     averageDepth = SumDepth/expandedNodes
@@ -262,8 +271,11 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
     # Effective Branching Factor
     ebf = scannedNodes ** (1/current_node_forward.d)
     
+    # Success
+    PenetrationY = current_node_forward.d/scannedNodes
+               
     # Return None, no path is found
-    return -1,-1,-1,-1
+    return -1,expandedNodes,-1,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
 
 # Check if a neighbor should be removed from closed list
 def remove_from_closed(closed,neighbor):

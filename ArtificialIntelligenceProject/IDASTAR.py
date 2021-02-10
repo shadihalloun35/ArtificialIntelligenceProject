@@ -31,15 +31,15 @@ def idastar_search(maximum_depth , dim , startPoint , goalPoint , matrix, heuris
     while(1): 
         
         # Calling the contour function with a particular threshold
-        trackingpath,cost,expandedNodes,distance,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,found = dfsContour(dim,start_node, goal_node, matrix,heuristicMatrix,0,threshold,runningTimeAllowed,start)
+        trackingpath,cost,expandedNodes,distance,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY,found = dfsContour(dim,start_node, goal_node, matrix,heuristicMatrix,0,threshold,runningTimeAllowed,start)
         
          # Checking if the time has excceded
         if timeit.default_timer() - start > runningTimeAllowed:
-            return -2,cost,expandedNodes,distance,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+            return -2,cost,expandedNodes,distance,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
         
         # Path was found
         if found == True:
-            return distance,expandedNodes,trackingpath[::-1],cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+            return distance,expandedNodes,trackingpath[::-1],cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
         
         #elif distance ==  float("inf"):
      #       return -1,-1,-1,-1
@@ -61,6 +61,9 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
      # Effective Branching Factor
      ebf = 1
                
+     # Success (Y/N)
+     PenetrationY = 1
+    
      # Number of the expanded nodes
      expandedNodes = 0
      
@@ -103,14 +106,14 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
      # There is no f cost higher than the threeshold so we return 
      # the f cost to make our first iteration
      if startNode.f > threshold:
-         return -1,-1,-1,startNode.f,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,False
+         return -1,-1,-1,startNode.f,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY,False
      
      # Check if we have reached the goal, return the path
      if startNode == goalNode:
          
         cost = startNode.g
         # We have found the goal node we we're searching for
-        return startNode,cost,1,[str(startNode) + str(cost)],scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,True
+        return startNode,cost,1,[str(startNode) + str(cost)],scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY,True
    
     
      minVal = float("inf")
@@ -142,6 +145,7 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
             expandedNodes += 1
             
             # Check if we have reached the goal, return the path
+            # We have found the goal node we we're searching for
             if currentNode == goalNode:
                 
                # Updating the minimum depth
@@ -154,10 +158,15 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
                # Averange Heuristic Values
                averageHeuristicValues = SumHeuristicValues/scannedNodes
                
-               # We have found the goal node we we're searching for
                path = []
                trackingpath = []
                cost = currentNode.g
+               
+               # Effective Branching Factor
+               ebf = scannedNodes ** (1/currentNode.d)
+     
+               # Success
+               PenetrationY = currentNode.d/scannedNodes
                
                while currentNode != startNode:
                     path.append(str(currentNode.point) + ': ' + str(currentNode.g))
@@ -170,11 +179,8 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
                # Penetration Ratio
                PenetrationRatio = maximumDepth/scannedNodes
                
-               # Effective Branching Factor
-               ebf = scannedNodes ** (1/currentNode.d)
-     
                # Return reversed path
-               return trackingpath,cost,expandedNodes,path[::-1],scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,True         
+               return trackingpath,cost,expandedNodes,path[::-1],scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY,True         
                          
             minVal = float("inf")
             neighbourPoints = getNeighbours(dim,currentNode.point,matrix)
@@ -218,7 +224,10 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
      # Penetration Ratio
      PenetrationRatio = maximumDepth/scannedNodes
      
-     return -1,-1,-1,minVal,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,False
+     # Success
+     PenetrationY = currentNode.d/scannedNodes
+               
+     return -1,-1,-1,minVal,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY,False
              
              
 

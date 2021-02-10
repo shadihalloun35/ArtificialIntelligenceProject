@@ -114,6 +114,12 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix,runningT
             trackingpath = []
             cost = current_node.g
             
+            # Effective Branching Factor
+            ebf = scannedNodes ** (1/current_node.d)
+            
+            # Success
+            PenetrationY = current_node.d/scannedNodes
+            
             while current_node != start_node:
                 path.append(str(current_node.point) + ': ' + str(current_node.g))
                 trackingpath.append(current_node.point)
@@ -129,12 +135,9 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix,runningT
             
             # Penetration Ratio
             PenetrationRatio = maximumDepth/scannedNodes
-            
-            # Effective Branching Factor
-            ebf = scannedNodes ** (1/current_node.d)
-            
+                
             # Return reversed path
-            return path[::-1],expandedNodes,trackingpath[::-1],cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+            return path[::-1],expandedNodes,trackingpath[::-1],cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
         
         # Get neighbours
         neighborPoints = getNeighbours(dim,current_node.point,matrix)
@@ -181,9 +184,12 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix,runningT
             
     # Effective Branching Factor
     ebf = scannedNodes ** (1/current_node.d)
+
+    # Success
+    PenetrationY = current_node.d/scannedNodes
             
     # Return None, no path is found
-    return -1,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+    return -1,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
 
 # Check if a neighbor should be added to open list
 def add_to_open(opened, neighbor):
