@@ -94,7 +94,7 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
      averageDepth = 0
     
      # Variable for average heuristic values
-     averageHeuristicValues = 1
+     averageHeuristicValues = 0
      
      # Variable for the sum of the depth of the nodes that have been expanded
      SumDepth = 0
@@ -108,13 +108,14 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
      opened.append(currentNode)
      scannedNodes += 1
      visited[currentNode.point] = True
-      
+     x = 0
    
     
      while len(opened) > 0:      
          
          current = opened.pop(0) 
-         
+         expandedNodes += 1
+
          # Calculating the sum of the depth of the nodes
          SumDepth += current.d
          
@@ -145,7 +146,7 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
                 ebf = scannedNodes ** (1/current.d)
                 
                 # Success
-                PenetrationY = current.d/scannedNodes
+                PenetrationY = current.d/expandedNodes
      
                 while current != start_node:
                     
@@ -178,9 +179,7 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
                     neighborNode = Node(neighbour, current)                   
                     # try to visit a node in future, if not already been to it
                     if(not(visited[neighbour])):
-                        expandedNodes += 1
-                        neighborNode.d = current.d + 1 
-                        
+                        neighborNode.d = current.d + 1                         
                         opened.append(neighborNode)
                         scannedNodes += 1
                         visited[neighbour] = True
@@ -202,7 +201,7 @@ def dls_search(visited,dim , currentNode , goalNode , matrix,limit):
      ebf = scannedNodes ** (1/current.d)
             
      # Success
-     PenetrationY = current.d/scannedNodes
+     PenetrationY = current.d/expandedNodes
     
      return False
     

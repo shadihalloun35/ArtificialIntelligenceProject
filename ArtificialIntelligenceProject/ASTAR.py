@@ -29,6 +29,9 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix,runningT
     # Effective Branching Factor
     ebf = 1
             
+    # Success
+    PenetrationY = 0
+    
     # Variable for min depth
     minimumDepth = sys.maxsize
     
@@ -77,7 +80,7 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix,runningT
         
         # Checking if the time has excceded
         if timeit.default_timer() - start > runningTimeAllowed:
-            return -2,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+            return -2,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
 
         # Get the node with the lowest f cost
         current_node = heapq.heappop(opened)
@@ -118,7 +121,7 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix,runningT
             ebf = scannedNodes ** (1/current_node.d)
             
             # Success
-            PenetrationY = current_node.d/scannedNodes
+            PenetrationY = current_node.d/expandedNodes
             
             while current_node != start_node:
                 path.append(str(current_node.point) + ': ' + str(current_node.g))
@@ -137,6 +140,7 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix,runningT
             PenetrationRatio = maximumDepth/scannedNodes
                 
             # Return reversed path
+
             return path[::-1],expandedNodes,trackingpath[::-1],cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
         
         # Get neighbours
@@ -186,7 +190,7 @@ def astar_search(dim , startPoint , goalPoint , matrix, heuristicMatrix,runningT
     ebf = scannedNodes ** (1/current_node.d)
 
     # Success
-    PenetrationY = current_node.d/scannedNodes
+    PenetrationY = current_node.d/expandedNodes
             
     # Return None, no path is found
     return -1,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
@@ -215,7 +219,6 @@ def getNeighbours(dim,currentNodePoint,matrix):
                 myList.append((i,j))  
 
     return myList     
-
 
 
 

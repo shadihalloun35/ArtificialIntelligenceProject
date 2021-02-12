@@ -96,14 +96,20 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
 
     # Checking if we can access to the goal point
     if matrix[goalPoint[0]][goalPoint[1]] == -1:
-        return -1,-1,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+        return -1,-1,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
+    
+    
+    if goalPoint == startPoint:
+        path = []
+        trackingpath = []
+        return  path,expandedNodes,trackingpath,2,2,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
     
     # Loop until the open list is empty
     while len(forwardOpened) > 0 or len(backwardOpened) > 0:
         
         # Checking if the time has excceded
         if timeit.default_timer() - start > runningTimeAllowed:
-            return -2,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth
+            return -2,expandedNodes,-1,-1,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
 
         # Get the node with the lowest cost
         if len(forwardOpened) > 0:
@@ -234,7 +240,7 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
             ebf = scannedNodes ** (1/current_node_backward.d)
             
             # Success
-            PenetrationY = current_node_backward.d/scannedNodes
+            PenetrationY = current_node_backward.d/expandedNodes
     
             return path,expandedNodes,trackingpath,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
         
@@ -258,7 +264,7 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
             ebf = scannedNodes ** (1/current_node_forward.d)
     
             # Success
-            PenetrationY = current_node_forward.d/scannedNodes
+            PenetrationY = current_node_forward.d/expandedNodes
     
             return path,expandedNodes,trackingpath,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
         
@@ -272,7 +278,7 @@ def biastar_search(dim , startPoint , goalPoint , matrix, forwardHeuristicMatrix
     ebf = scannedNodes ** (1/current_node_forward.d)
     
     # Success
-    PenetrationY = current_node_forward.d/scannedNodes
+    PenetrationY = current_node_forward.d/expandedNodes
                
     # Return None, no path is found
     return -1,expandedNodes,-1,totalSumG,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY
@@ -353,7 +359,15 @@ def findpath(start_node,goal_node,forwardOpened,forwardClosed,backwardOpened,bac
 
     
     # Total cost of the path
-    totalSumG = int(pathBackward[0].split(':')[1]) + int(pathForward[0].split(':')[1]) + matrix[goalPoint[0]][goalPoint[1]]
+    valuePathBackward = 0
+    valuePathForward = 0
+    if len(pathBackward) > 0 :
+        valuePathBackward = pathBackward[0].split(':')[1]
+        
+    if len(pathForward) > 0:
+        valuePathForward = pathForward[0].split(':')[1]
+        
+    totalSumG = int(valuePathBackward) + int(valuePathForward) + matrix[goalPoint[0]][goalPoint[1]]
     
     # Our Final Path
     trackingpath = trackingpathForward[::-1] + trackingpathBackward

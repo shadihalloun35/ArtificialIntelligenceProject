@@ -113,7 +113,7 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
          
         cost = startNode.g
         # We have found the goal node we we're searching for
-        return startNode,cost,1,[str(startNode) + str(cost)],scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY,True
+        return [startNode],cost,1,[str(startNode.point) + ': ' + str(startNode.g)],scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY,True
    
     
      minVal = float("inf")
@@ -166,7 +166,7 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
                ebf = scannedNodes ** (1/currentNode.d)
      
                # Success
-               PenetrationY = currentNode.d/scannedNodes
+               PenetrationY = currentNode.d/expandedNodes
                
                while currentNode != startNode:
                     path.append(str(currentNode.point) + ': ' + str(currentNode.g))
@@ -225,7 +225,7 @@ def dfsContour(dim , startNode , goalNode , matrix,heuristicMatrix,distance,thre
      PenetrationRatio = maximumDepth/scannedNodes
      
      # Success
-     PenetrationY = currentNode.d/scannedNodes
+     PenetrationY = currentNode.d/expandedNodes
                
      return -1,-1,-1,minVal,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY,False
              

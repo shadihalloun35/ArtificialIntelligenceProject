@@ -19,161 +19,123 @@ from HeuristicFunctions import calcCosineHeuristic
 
 
 
-start = timeit.default_timer()
-
-#Your statements here
-
-def findTrackingpath(trackingpath):
-    trackSet = ''
+while(1):
     
-    for i in range(len(trackingpath) - 1):
+    print('\nPlease enter the full path of the file input or (exit) to quit\n')
+    fileInputName = input()
+    
+    if(fileInputName == 'exit'):
+        break
+    
+    start = timeit.default_timer()
+    
+    #Your statements here
+    
+    def findTrackingpath(trackingpath):
+        trackSet = ''
         
-        if trackingpath[i][0] < trackingpath[i+1][0] and trackingpath[i][1] < trackingpath[i+1][1]:
-            trackSet = trackSet + '-RD'
+        for i in range(len(trackingpath) - 1):
             
-        elif trackingpath[i][0] < trackingpath[i+1][0] and trackingpath[i][1] > trackingpath[i+1][1]:
-            trackSet = trackSet + '-LD'
-
-        elif trackingpath[i][0] < trackingpath[i+1][0] and trackingpath[i][1] == trackingpath[i+1][1]:
-            trackSet = trackSet + '-D'
-            
-        elif trackingpath[i][0] > trackingpath[i+1][0] and trackingpath[i][1] > trackingpath[i+1][1]:
-            trackSet = trackSet + '-LU'
+            if trackingpath[i][0] < trackingpath[i+1][0] and trackingpath[i][1] < trackingpath[i+1][1]:
+                trackSet = trackSet + '-RD'
+                
+            elif trackingpath[i][0] < trackingpath[i+1][0] and trackingpath[i][1] > trackingpath[i+1][1]:
+                trackSet = trackSet + '-LD'
     
-        elif trackingpath[i][0] > trackingpath[i+1][0] and trackingpath[i][1] < trackingpath[i+1][1]:
-            trackSet = trackSet + '-RU'
-            
-        elif trackingpath[i][0] > trackingpath[i+1][0] and trackingpath[i][1] == trackingpath[i+1][1]:
-            trackSet = trackSet + '-U'
-            
-        elif trackingpath[i][0] == trackingpath[i+1][0] and trackingpath[i][1] < trackingpath[i+1][1]:
-            trackSet = trackSet + '-R'
+            elif trackingpath[i][0] < trackingpath[i+1][0] and trackingpath[i][1] == trackingpath[i+1][1]:
+                trackSet = trackSet + '-D'
+                
+            elif trackingpath[i][0] > trackingpath[i+1][0] and trackingpath[i][1] > trackingpath[i+1][1]:
+                trackSet = trackSet + '-LU'
+        
+            elif trackingpath[i][0] > trackingpath[i+1][0] and trackingpath[i][1] < trackingpath[i+1][1]:
+                trackSet = trackSet + '-RU'
+                
+            elif trackingpath[i][0] > trackingpath[i+1][0] and trackingpath[i][1] == trackingpath[i+1][1]:
+                trackSet = trackSet + '-U'
+                
+            elif trackingpath[i][0] == trackingpath[i+1][0] and trackingpath[i][1] < trackingpath[i+1][1]:
+                trackSet = trackSet + '-R'
+        
+            elif trackingpath[i][0] == trackingpath[i+1][0] and trackingpath[i][1] > trackingpath[i+1][1]:
+                trackSet = trackSet + '-L'
+                
+        return trackSet[1:]
     
-        elif trackingpath[i][0] == trackingpath[i+1][0] and trackingpath[i][1] > trackingpath[i+1][1]:
-            trackSet = trackSet + '-L'
-            
-    return trackSet[1:]
-
-
-f = open("firstInput.txt", "r")
-savedInput  = f.read().splitlines()
-algorithm = savedInput[0]
-dim = int(savedInput[1])
-startPoint_list = savedInput[2].split(',')
-startPoint = (int(startPoint_list[0]),int(startPoint_list[0]))
-goalPoint_list = savedInput[3].split(',')
-goalPoint = (int(goalPoint_list[0]),int(goalPoint_list[1]))
-matrix = [[int(num) for num in line.split(',')] for line in savedInput[4:]]
-limitedRunTime = 200
-trackingpath = []
-
-
-if algorithm == 'ASTAR':
-    euclideanHeuristicMatrix = calcManhattanHeuristic(goalPoint,dim,matrix)
-    runningTimeAllowed = (dim/60) * 15
-    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix,runningTimeAllowed,start)
-
-elif algorithm == 'UCS':
-    runningTimeAllowed = (dim/60) * 20
-    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = UCS.ucs_search(dim , startPoint , goalPoint , matrix,runningTimeAllowed,start)
-
-elif algorithm == 'IDS':
-    runningTimeAllowed = (dim/60) * 30
-    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = IDS.ids_search(sys.maxsize , dim , startPoint , goalPoint , matrix,runningTimeAllowed,start)
-
-elif algorithm == 'BIASTAR':
-    ForwardEuclideanHeuristicMatrix = calcManhattanHeuristic(goalPoint,dim,matrix)
-    BackwardEuclideanHeuristicMatrix = calcManhattanHeuristic(startPoint,dim,matrix)
-    runningTimeAllowed = (dim/60) * (10)
-    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix,runningTimeAllowed,start)
-
-elif algorithm == 'IDASTAR':
-    euclideanHeuristicMatrix = calcManhattanHeuristic(goalPoint,dim,matrix)
-    runningTimeAllowed = (dim/60) * (350)
-    path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = IDASTAR.idastar_search(sys.maxsize, dim, startPoint, goalPoint, matrix, euclideanHeuristicMatrix,runningTimeAllowed,start)
-
-
-stop = timeit.default_timer()
-runTime = stop - start
-
-if runTime < limitedRunTime:
-    print(path)
-    print(scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY)
-    print('Time:', runTime,'seconds')
-else:
-    print('FAILED')
-
-output = open("outPut.txt", "w")
-
-if trackingpath != -1:
-    trackPath = findTrackingpath(trackingpath)
-    trackPath = trackPath + ' ' + str(cost) + ' ' + str(expandedNodes)
-    print(trackPath)
-    output.write(trackPath)
+    try:
+        f = open(fileInputName, "r")
+        
+    except IOError:
+        print("\מOops!  That was no valid path.  Try again...\n")
+        continue
     
-else:
-    print('No path has been found !')
+    savedInput  = f.read().splitlines()
+    algorithm = savedInput[0]
+    dim = int(savedInput[1])
+    startPoint_list = savedInput[2].split(',')
+    startPoint = (int(startPoint_list[0]),int(startPoint_list[0]))
+    goalPoint_list = savedInput[3].split(',')
+    goalPoint = (int(goalPoint_list[0]),int(goalPoint_list[1]))
+    matrix = [[int(num) for num in line.split(',')] for line in savedInput[4:]]
+    trackingpath = []
+    
 
-output.close()
+    if algorithm == 'ASTAR':
+
+        euclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
+        runningTimeAllowed = (dim/60) * 15
+        path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix,runningTimeAllowed,start)
+
+    elif algorithm == 'UCS':
+        runningTimeAllowed = (dim/60) * 20
+        path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = UCS.ucs_search(dim , startPoint , goalPoint , matrix,runningTimeAllowed,start)
+    
+    elif algorithm == 'IDS':
+        runningTimeAllowed = (dim/60) * 30
+        path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = IDS.ids_search(sys.maxsize , dim , startPoint , goalPoint , matrix,runningTimeAllowed,start)
+    
+    elif algorithm == 'BIASTAR':
+        ForwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
+        BackwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(startPoint,dim,matrix)
+        runningTimeAllowed = (dim/60) * 10
+        path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix,runningTimeAllowed,start)
+    
+    elif algorithm == 'IDASTAR':
+        euclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
+        runningTimeAllowed = (dim/60) * 350
+        path,expandedNodes,trackingpath,cost,scannedNodes,PenetrationRatio,minimumDepth,averageDepth,maximumDepth,averageHeuristicValues,ebf,PenetrationY = IDASTAR.idastar_search(sys.maxsize, dim, startPoint, goalPoint, matrix, euclideanHeuristicMatrix,runningTimeAllowed,start)
+    
+    else :
+        
+        print('Alogirithm is not defined\n')
+
+    stop = timeit.default_timer()
+    runTime = stop - start
+    
+    output = open("outPut.txt", "w")
+
+    if runTime > runningTimeAllowed:
+        output.write('FAILED\n')
+        
+    if trackingpath == -1:
+         output.write('FAILED\n')
+         
+    AverageStatisticsValues = '\n' + str(algorithm) + '             Euclidean Heuristic' + '           ' + str(scannedNodes)+ '             ' + str('%.5f' % PenetrationRatio)+ '                 ' + str('%.5f' % PenetrationY)+ '                  '+str('%.5f' % runTime)+ '                   ' + str('%.5f' % ebf) + '               '+ str('%.5f' % averageHeuristicValues)+ '             ' + str('%.5f' % minimumDepth)+ '          ' + str('%.5f' % averageDepth)+ '              ' + str('%.5f' % maximumDepth)
+    #print('Time:', runTime,'seconds\n')      
+    
+   
+    
+    if trackingpath != -1:
+        trackPath = findTrackingpath(trackingpath)
+        trackPath = trackPath + ' ' + str(cost) + ' ' + str(expandedNodes) + '\n'
+        #print(trackPath +'\n')
+        output.write(trackPath) 
+        
+    AverageStatistics ='\nProblem     |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max\n'
+    output.write(AverageStatistics)
+    output.write(AverageStatisticsValues)
 
 
-
-
-
-
-
-
-
-
-
-'''
-euclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
-#print(euclideanHeuristicMatrix)
-path,expandedNodes = ASTAR.astar_search(dim , startPoint , goalPoint , matrix, euclideanHeuristicMatrix)
-
-#stop = timeit.default_timer()
-
-print(path)
-#print('Time: ', stop - start)  
-print('------------------------------')
-
-#path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
-
-#print(path,expandedNodes)
-
-#path = IDS.ids_search(sys.maxsize , dim , startPoint , goalPoint , matrix)
-
-#print(path)
-
-ForwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(goalPoint,dim,matrix)
-BackwardEuclideanHeuristicMatrix = calcEuclideanHeuristic(startPoint,dim,matrix)
-# =============================================================================
-#print(ForwardEuclideanHeuristicMatrix)
-#print("-----------------------------")
-#print(BackwardEuclideanHeuristicMatrix)
-# =============================================================================
-
-
-path,totalSumG = BIASTAR.biastar_search(dim , startPoint , goalPoint , matrix, ForwardEuclideanHeuristicMatrix,BackwardEuclideanHeuristicMatrix)
-print(path)
-print(totalSumG)
-
-#path,expandedNodes = UCS.ucs_search(dim , startPoint , goalPoint , matrix)
-
-
-
-#path = IDASTAR.idastar_search(sys.maxsize, dim, startPoint, goalPoint, matrix, euclideanHeuristicMatrix)
-
-#print(path)
-
-
-'''
-
-
-'''
-import sys
-output = open(sys.argv[1] + ".txt", "w")
-myfile = open(sys.argv[1])
-en_data = myfile.read()
-print(en_data)
-'''           
+    
+    output.close()
+    
