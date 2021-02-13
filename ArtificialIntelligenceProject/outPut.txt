@@ -1,5 +1,5 @@
- 0 2
+RD-RD-RD-RD-RD-RD-RD-RD-RD-RD-RD-RD-RD-RD-RD-RD 16 17
 
 Problem     |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max
 
-IDS             Euclidean Heuristic           1             1.00000                 0.50000                  0.00053                   1.00000               0.00000             1.00000          0.50000              1.00000
+ASTAR             Euclidean Heuristic           79             0.21519                 1.00000                  0.05239                   1.29308               18.38246             17.00000          9.00000              17.00000

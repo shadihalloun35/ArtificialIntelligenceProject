@@ -35,7 +35,7 @@ def calcManhattanHeuristic(goal,dim , matrix):
            deltay = abs(goal[1]+1 - j)
            
            #Manhattan Formula
-           manhattanDistance = (deltax + deltay)/(dim+1)#math.sqrt(dim**2 + dim**2)
+           manhattanDistance = (deltax + deltay)/(dim+1)
            manhattanRow.append(manhattanDistance)
            
        manhattanHeuristicMatrix.append(manhattanRow)
