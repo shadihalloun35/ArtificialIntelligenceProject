@@ -12,6 +12,7 @@ import math
 import sys
 import UCS
 import timeit
+import os
 
 from HeuristicFunctions import calcEuclideanHeuristic
 from HeuristicFunctions import calcManhattanHeuristic
@@ -112,8 +113,11 @@ while(1):
     stop = timeit.default_timer()
     runTime = stop - start
     
-    pathFile = open(fileInputName + "Path.txt", "w")
-    averageStatisticsFile = open("fileInputName + Averagestatistics.txt", "w")
+    x = "Path_" + os.path.basename(fileInputName)
+    y = "Averagestatistics_" + os.path.basename(fileInputName)
+    
+    pathFile = open(x, "w")
+    averageStatisticsFile = open(y, "w")
 
     if runTime > runningTimeAllowed:
         pathFile.write('FAILED\n')
@@ -121,7 +125,7 @@ while(1):
     if trackingpath == -1:
          pathFile.write('FAILED\n')
          
-    AverageStatisticsValues = '\n' + str(fileInputName) + '             Euclidean Heuristic' + '           ' + str(scannedNodes)+ '             ' + str('%.5f' % PenetrationRatio)+ '                 ' + str('%.5f' % PenetrationY)+ '                  '+str('%.5f' % runTime)+ '                   ' + str('%.5f' % ebf) + '               '+ str('%.5f' % averageHeuristicValues)+ '             ' + str('%.5f' % minimumDepth)+ '          ' + str('%.5f' % averageDepth)+ '              ' + str('%.5f' % maximumDepth)
+    AverageStatisticsValues = '\n' + os.path.basename(fileInputName) + '             Euclidean Heuristic' + '           ' + str(scannedNodes)+ '             ' + str('%.5f' % PenetrationRatio)+ '                 ' + str('%.5f' % PenetrationY)+ '                  '+str('%.5f' % runTime)+ '                   ' + str('%.5f' % ebf) + '               '+ str('%.5f' % averageHeuristicValues)+ '             ' + str('%.5f' % minimumDepth)+ '          ' + str('%.5f' % averageDepth)+ '              ' + str('%.5f' % maximumDepth)
     #print('Time:', runTime,'seconds\n')      
     
    
@@ -129,10 +133,9 @@ while(1):
     if trackingpath != -1:
         trackPath = findTrackingpath(trackingpath)
         trackPath = trackPath + ' ' + str(cost) + ' ' + str(expandedNodes) + '\n'
-        #print(trackPath +'\n')
         pathFile.write(trackPath) 
         
-    AverageStatistics ='Problem     |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max\n'
+    AverageStatistics ='Problem            |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max\n'
     averageStatisticsFile.write(AverageStatistics)
     averageStatisticsFile.write(AverageStatisticsValues)
 
