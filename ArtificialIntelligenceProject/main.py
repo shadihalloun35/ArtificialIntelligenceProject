@@ -112,13 +112,14 @@ while(1):
     stop = timeit.default_timer()
     runTime = stop - start
     
-    output = open("outPut.txt", "w")
+    pathFile = open("path.txt", "w")
+    averageStatisticsFile = open("averagestatistics.txt", "w")
 
     if runTime > runningTimeAllowed:
-        output.write('FAILED\n')
+        pathFile.write('FAILED\n')
         
     if trackingpath == -1:
-         output.write('FAILED\n')
+         pathFile.write('FAILED\n')
          
     AverageStatisticsValues = '\n' + str(algorithm) + '             Euclidean Heuristic' + '           ' + str(scannedNodes)+ '             ' + str('%.5f' % PenetrationRatio)+ '                 ' + str('%.5f' % PenetrationY)+ '                  '+str('%.5f' % runTime)+ '                   ' + str('%.5f' % ebf) + '               '+ str('%.5f' % averageHeuristicValues)+ '             ' + str('%.5f' % minimumDepth)+ '          ' + str('%.5f' % averageDepth)+ '              ' + str('%.5f' % maximumDepth)
     #print('Time:', runTime,'seconds\n')      
@@ -129,13 +130,15 @@ while(1):
         trackPath = findTrackingpath(trackingpath)
         trackPath = trackPath + ' ' + str(cost) + ' ' + str(expandedNodes) + '\n'
         #print(trackPath +'\n')
-        output.write(trackPath) 
+        pathFile.write(trackPath) 
         
-    AverageStatistics ='\nProblem     |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max\n'
-    output.write(AverageStatistics)
-    output.write(AverageStatisticsValues)
+    AverageStatistics ='Problem     |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max\n'
+    averageStatisticsFile.write(AverageStatistics)
+    averageStatisticsFile.write(AverageStatisticsValues)
 
 
     
-    output.close()
+    pathFile.close()
+    averageStatisticsFile.close()
+
     
