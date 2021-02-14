@@ -112,8 +112,8 @@ while(1):
     stop = timeit.default_timer()
     runTime = stop - start
     
-    pathFile = open("path.txt", "w")
-    averageStatisticsFile = open("averagestatistics.txt", "w")
+    pathFile = open(fileInputName + "Path.txt", "w")
+    averageStatisticsFile = open("fileInputName + Averagestatistics.txt", "w")
 
     if runTime > runningTimeAllowed:
         pathFile.write('FAILED\n')
@@ -121,7 +121,7 @@ while(1):
     if trackingpath == -1:
          pathFile.write('FAILED\n')
          
-    AverageStatisticsValues = '\n' + str(algorithm) + '             Euclidean Heuristic' + '           ' + str(scannedNodes)+ '             ' + str('%.5f' % PenetrationRatio)+ '                 ' + str('%.5f' % PenetrationY)+ '                  '+str('%.5f' % runTime)+ '                   ' + str('%.5f' % ebf) + '               '+ str('%.5f' % averageHeuristicValues)+ '             ' + str('%.5f' % minimumDepth)+ '          ' + str('%.5f' % averageDepth)+ '              ' + str('%.5f' % maximumDepth)
+    AverageStatisticsValues = '\n' + str(fileInputName) + '             Euclidean Heuristic' + '           ' + str(scannedNodes)+ '             ' + str('%.5f' % PenetrationRatio)+ '                 ' + str('%.5f' % PenetrationY)+ '                  '+str('%.5f' % runTime)+ '                   ' + str('%.5f' % ebf) + '               '+ str('%.5f' % averageHeuristicValues)+ '             ' + str('%.5f' % minimumDepth)+ '          ' + str('%.5f' % averageDepth)+ '              ' + str('%.5f' % maximumDepth)
     #print('Time:', runTime,'seconds\n')      
     
    

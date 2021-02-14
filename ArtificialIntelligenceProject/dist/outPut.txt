@@ -1,5 +1,0 @@
-RD-LD-D-RD-RD-R-RD-RD-RD-D-RD-RD-R-R-RD-R-RD-RD-RD-RD 36 117
-
-Problem     |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max
-
-ASTAR             Euclidean Heuristic           215             0.09767                 0.17949                  0.01474                   1.29142               53.89151             2.00000          10.64957              21.00000
