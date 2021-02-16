@@ -1,0 +1,3 @@
+Problem            |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max
+
+third.txt             Euclidean Heuristic           2573             0.01982                 0.02989                  2.37973                   1.16646               310.89685             2.00000          23.71630              51.00000

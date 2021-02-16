@@ -1,0 +1,3 @@
+Problem            |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max
+
+fourth.txt             Euclidean Heuristic           513             0.04678                 0.12060                  0.04888                   1.29694               0.00000             2.00000          12.47236              24.00000

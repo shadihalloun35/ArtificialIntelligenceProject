@@ -1,3 +1,0 @@
-Problem     |      Heuristic Name       |      N      |         d/N           |     Success(Y/N)     |        Time(sec)           |        EBF         |     avg H Value      |      Min     |        Avg            |       Max
-
-IDASTAR             Euclidean Heuristic           1860             0.01129                 0.04023                  0.21630                   1.43117               29.65681             2.00000          26.74713              21.00000
